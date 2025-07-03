@@ -2,7 +2,7 @@
 
 import { User } from '../types';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://phoenixback.pythonanywhere.com/api';
 
 interface AuthTokens {
   access: string;
