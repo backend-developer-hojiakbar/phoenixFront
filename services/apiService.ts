@@ -2,7 +2,7 @@ import axios from 'axios';
 import { User } from '../types';
 
 // O'zgarmas manzil shu yerda belgilanadi
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = 'https://phoenixapi.pythonanywhere.com/api';
 
 const apiService = axios.create({
     baseURL: API_BASE_URL, // O'zgarmas manzil ishlatildi
