@@ -1,0 +1,6 @@
+{
+  "name": "Phoenix Scientific Publication Center (PSPC) 2",
+  "description": "A comprehensive system for managing academic publications, submissions, reviews, issues, and user roles. Features role-based access, AI-powered assistance, and aims for discoverability.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
