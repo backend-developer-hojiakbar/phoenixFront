@@ -1,0 +1,141 @@
+import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../../hooks/useLanguage';
+import Card from '../../components/common/Card';
+import Button from '../../components/common/Button';
+import Input from '../../components/common/Input';
+import Alert from '../../components/common/Alert';
+import { Cog6ToothIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'; 
+import { IntegrationSetting } from '../../types'; 
+import { LocalizationKeys } from '../../constants'; // constants.ts faylingizdagi LocalizationKeys
+import apiService from '../../services/apiService';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+
+const AdminSystemSettingsPage: React.FC = () => {
+    const { translate } = useLanguage();
+    const [settings, setSettings] = useState<IntegrationSetting[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [tempApiKeys, setTempApiKeys] = useState<Record<string, string>>({});
+    const [tempSettings, setTempSettings] = useState<IntegrationSetting[]>([]);
+
+
+    const fetchSettings = async () => {
+        setIsLoading(true);
+        try {
+            // Endi bu yerga massiv keladi
+            const { data } = await apiService.get<IntegrationSetting[]>('/system-settings/');
+            setSettings(data);
+            // JSON.parse(JSON.stringify(data)) chuqur nusxalash uchun yaxshi usul
+            setTempSettings(JSON.parse(JSON.stringify(data)));
+        } catch (error) {
+            setActionMessage({type: 'error', text: "Sozlamalarni yuklashda xatolik."});
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchSettings();
+    }, []);
+
+    const handleSettingChange = (serviceName: string, field: keyof IntegrationSetting, value: any) => {
+        setTempSettings(prev => prev.map(s => {
+            if (s.serviceName === serviceName) {
+                return {...s, [field]: value};
+            }
+            return s;
+        }));
+    };
+
+    const handleSaveSettings = async (serviceName: string) => {
+        const settingToUpdate = tempSettings.find(s => s.serviceName === serviceName);
+        if (!settingToUpdate) return;
+        
+        setIsLoading(true);
+        setActionMessage(null);
+        
+        // Backendga yuboriladigan ma'lumotlar
+        const dataToPatch: Partial<IntegrationSetting> & { apiKey?: string } = {
+            isEnabled: settingToUpdate.isEnabled,
+            monthlyLimit: settingToUpdate.monthlyLimit,
+            serviceUrl: settingToUpdate.serviceUrl,
+        };
+        
+        const tempApiKey = tempApiKeys[serviceName];
+        if (tempApiKey) {
+            dataToPatch.apiKey = tempApiKey;
+        }
+
+        try {
+            // URL'ni to'g'rilaymiz, serviceName qo'shiladi
+            await apiService.patch(`/system-settings/${serviceName}/`, dataToPatch);
+            setActionMessage({ type: 'success', text: "Sozlamalar muvaffaqiyatli saqlandi!" });
+            await fetchSettings(); // Yangilangan ma'lumotlarni olish
+            setTempApiKeys(prev => ({ ...prev, [serviceName]: '' })); // Vaqtinchalik API keyni tozalash
+        } catch(err: any) {
+            setActionMessage({type: 'error', text: err.response?.data?.error || 'Sozlamalarni saqlashda xatolik.'});
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    return (
+        <div className="space-y-8">
+            <div className="flex items-center space-x-3">
+                <Cog6ToothIcon className="h-8 w-8 text-accent-sky" />
+                <h1 className="text-3xl font-bold text-accent-sky">Tizim Sozlamalari</h1>
+            </div>
+
+            {actionMessage && <Alert type={actionMessage.type} message={actionMessage.text} onClose={() => setActionMessage(null)} className="my-4" />}
+
+            <Card title="Integratsiya Sozlamalari" icon={<PuzzlePieceIcon className="h-6 w-6 text-accent-emerald"/>}>
+                {isLoading ? <LoadingSpinner /> : tempSettings.length > 0 ? tempSettings.map(setting => (
+                    <div key={setting.serviceName} className="mb-6 p-4 border border-slate-700 rounded-md bg-slate-800/30">
+                        <h3 className="text-lg font-semibold text-light-text mb-2 flex items-center">
+                            {setting.serviceName}
+                        </h3>
+                        <div className="flex items-center space-x-3 mb-3">
+                            <label className="text-sm text-medium-text">Servis faol</label>
+                            <input 
+                                type="checkbox"
+                                checked={setting.isEnabled}
+                                onChange={(e) => handleSettingChange(setting.serviceName, 'isEnabled', e.target.checked)}
+                                className="form-checkbox h-5 w-5 text-accent-purple bg-slate-600 border-slate-500 rounded focus:ring-accent-purple"
+                            />
+                        </div>
+                        
+                        <Input 
+                            label="Yangi API Key kiritish" 
+                            type="password"
+                            value={tempApiKeys[setting.serviceName] || ''}
+                            onChange={e => setTempApiKeys(prev => ({...prev, [setting.serviceName]: e.target.value}))}
+                            placeholder={setting.apiKeyMasked || 'API kaliti kiritilmagan'}
+                            wrapperClassName="mb-1"
+                        />
+                         <Input
+                            label={'Servis URL manzili'}
+                            value={setting.serviceUrl || ''}
+                            onChange={(e) => handleSettingChange(setting.serviceName, 'serviceUrl', e.target.value)}
+                        />
+                         <Input
+                            label={'Oylik chegara (limit)'}
+                            type="number"
+                            value={setting.monthlyLimit || ''}
+                            onChange={(e) => handleSettingChange(setting.serviceName, 'monthlyLimit', parseInt(e.target.value) || 0)}
+                        />
+                        <p className="text-xs text-slate-500 mb-3">API kalitini o'zgartirish uchun shu yerga yangisini yozing. O'zgartirmasangiz, bo'sh qoldiring.</p>
+
+                        <Button onClick={() => handleSaveSettings(setting.serviceName)} className="mt-4" isLoading={isLoading}>
+                            Saqlash
+                        </Button>
+                    </div>
+                )) : (
+                    <p className="text-medium-text">Hech qanday sozlama topilmadi.</p>
+                )}
+            </Card>
+        </div>
+    );
+};
+
+export default AdminSystemSettingsPage;
