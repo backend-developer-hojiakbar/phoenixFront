@@ -25,7 +25,6 @@ apiService.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
 apiService.interceptors.response.use(
     (response) => response,
     async (error) => {
