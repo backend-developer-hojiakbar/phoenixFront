@@ -3,7 +3,7 @@
 import axios from 'axios';
 
 // Lokal server uchun manzil
-const API_BASE_URL = 'https://phoenixapi.pythonanywhere.com'; // /api qismi olib tashlandi
+const API_BASE_URL = 'http://127.0.0.1:8000'; // /api qismi olib tashlandi
 
 const apiService = axios.create({
     baseURL: `${API_BASE_URL}/api`, // /api qismi bu yerga qo'shildi
