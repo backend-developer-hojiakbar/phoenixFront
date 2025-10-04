@@ -1,0 +1,163 @@
+import React, { useState } from 'react';
+import { useLanguage } from '../../hooks/useLanguage';
+import { useAuth } from '../../hooks/useAuth';
+import Card from '../../components/common/Card';
+import Button from '../../components/common/Button';
+import Input from '../../components/common/Input';
+import Textarea from '../../components/common/Textarea';
+import Alert from '../../components/common/Alert';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { CalendarDaysIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+
+const CalendarServicePage: React.FC = () => {
+    const { translate } = useLanguage();
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const [taskTitle, setTaskTitle] = useState('');
+    const [taskDescription, setTaskDescription] = useState('');
+    const [dueDate, setDueDate] = useState('');
+    const [contactPhone, setContactPhone] = useState('');
+    
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+        
+        // Validation
+        if (!taskTitle || !dueDate || !contactPhone) {
+            setError("Vazifa nomi, tugash sanasi va telefon raqami maydonlarini to'ldirish shart.");
+            setIsSubmitting(false);
+            return;
+        }
+        
+        // Validate phone number format (simple validation)
+        const phoneRegex = /^\+?[0-9\s\-\(\)]+$/;
+        if (!phoneRegex.test(contactPhone)) {
+            setError("Iltimos, to'g'ri telefon raqamini kiriting.");
+            setIsSubmitting(false);
+            return;
+        }
+        
+        // Validate date format (simple validation)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(dueDate)) {
+            setError("Iltimos, to'g'ri sana formatini kiriting (YYYY-MM-DD).");
+            setIsSubmitting(false);
+            return;
+        }
+        
+        // In a real application, you would submit this data to your backend API
+        // For now, we'll just simulate a successful submission
+        try {
+            // Simulate API call delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Reset form
+            setTaskTitle('');
+            setTaskDescription('');
+            setDueDate('');
+            setContactPhone('');
+            
+            setSuccessMessage("Vazifa rejalashtirish so'rovingiz muvaffaqiyatli yuborildi! Siz bilan tez orada bog'lanamiz.");
+        } catch (err) {
+            setError("So'rovni yuborishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="space-y-6">
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-light-text">Kalendar Xizmati</h1>
+                <Button 
+                    variant="secondary" 
+                    onClick={() => navigate(-1)}
+                    leftIcon={<ArrowLeftIcon className="h-5 w-5" />}
+                >
+                    Orqaga
+                </Button>
+            </div>
+            
+            <Card title="Vazifa Rejalashtirish" icon={<CalendarDaysIcon className="h-6 w-6 text-accent-sky" />}>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {successMessage && (
+                        <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />
+                    )}
+                    
+                    {error && (
+                        <Alert type="error" message={error} onClose={() => setError(null)} />
+                    )}
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-medium-text mb-1">
+                            Vazifa nomi
+                        </label>
+                        <Input
+                            type="text"
+                            value={taskTitle}
+                            onChange={(e) => setTaskTitle(e.target.value)}
+                            placeholder="Vazifa nomini kiriting"
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-medium-text mb-1">
+                            Vazifa tavsifi
+                        </label>
+                        <Textarea
+                            value={taskDescription}
+                            onChange={(e) => setTaskDescription(e.target.value)}
+                            placeholder="Vazifa tavsifini kiriting"
+                            rows={3}
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-medium-text mb-1">
+                            Tugash sanasi
+                        </label>
+                        <Input
+                            type="date"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                            required
+                        />
+                    </div>
+                    
+                    <div>
+                        <label className="block text-sm font-medium text-medium-text mb-1">
+                            Bog'lanish uchun telefon raqami
+                        </label>
+                        <Input
+                            type="tel"
+                            value={contactPhone}
+                            onChange={(e) => setContactPhone(e.target.value)}
+                            placeholder="+998 XX XXX XX XX"
+                            required
+                        />
+                    </div>
+                    
+                    <div className="flex justify-end">
+                        <Button 
+                            type="submit" 
+                            isLoading={isSubmitting}
+                            className="px-6"
+                        >
+                            Vazifani Rejalashtirish
+                        </Button>
+                    </div>
+                </form>
+            </Card>
+        </div>
+    );
+};
+
+export default CalendarServicePage;

@@ -8,7 +8,7 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Alert from '../../components/common/Alert';
 import Modal from '../../components/common/Modal';
 import DocumentViewer from '../../components/common/DocumentViewer';
-import { ArrowLeftIcon, EyeIcon, InboxStackIcon, PaperAirplaneIcon, LinkIcon, PaperClipIcon, TrophyIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon, EyeIcon, InboxStackIcon, PaperAirplaneIcon, LinkIcon, PaperClipIcon, TrophyIcon, SparklesIcon, DocumentCheckIcon } from '@heroicons/react/24/outline';
 import apiService, { createFormData } from '../../services/apiService';
 import Input from '../../components/common/Input';
 import Textarea from '../../components/common/Textarea';
@@ -97,19 +97,6 @@ const ArticleDetailPage: React.FC = () => {
                     <h1 className="text-3xl font-bold text-light-text">{article.title}</h1>
                     <StatusBadge status={article.status} />
                 </div>
-                {successMessage && <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />}
-                {article.status === ArticleStatus.NEEDS_REVISION && (
-                    <Card title="Maqolani Qayta Yuborish">
-                        <p className="text-sm text-amber-200 mb-4">Redaktor izohi: {article.managerNotes || "Izoh qoldirilmagan."}</p>
-                        <form onSubmit={handleResubmit}>
-                            <Input type="file" onChange={(e) => setNewVersionFile(e.target.files ? e.target.files[0] : null)} required />
-                            <Button type="submit" isLoading={isResubmitting} leftIcon={<PaperAirplaneIcon className="h-5 w-5"/>} className="mt-2">
-                                Yangi Versiyani Yuborish
-                            </Button>
-                        </form>
-                    </Card>
-                )}
-                
                 <Card title="Versiyalar va Fayllar">
                     <div className="space-y-3">
                         {article.versions?.map(version => (
@@ -140,6 +127,19 @@ const ArticleDetailPage: React.FC = () => {
                         )}
                     </div>
                 </Card>
+
+                {successMessage && <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />}
+                {article.status === ArticleStatus.NEEDS_REVISION && (
+                    <Card title="Maqolani Qayta Yuborish">
+                        <p className="text-sm text-amber-200 mb-4">Redaktor izohi: {article.managerNotes || "Izoh qoldirilmagan."}</p>
+                        <form onSubmit={handleResubmit}>
+                            <Input type="file" onChange={(e) => setNewVersionFile(e.target.files ? e.target.files[0] : null)} required />
+                            <Button type="submit" isLoading={isResubmitting} leftIcon={<PaperAirplaneIcon className="h-5 w-5"/>} className="mt-2">
+                                Yangi Versiyani Yuborish
+                            </Button>
+                        </form>
+                    </Card>
+                )}
 
                 <Button onClick={() => navigate(-1)} variant="secondary" leftIcon={<ArrowLeftIcon className="h-5 w-5"/>}>
                     Orqaga

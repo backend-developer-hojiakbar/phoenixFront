@@ -39,7 +39,8 @@ const SubmitArticlePage: React.FC = () => {
   
   const isPartner = useMemo(() => {
     if (!user) return false;
-    return user.name.toLowerCase().includes('hamkor') || user.surname.toLowerCase().includes('hamkor');
+    const fullName = `${user.name} ${user.surname}`.toLowerCase();
+    return fullName.includes('hamkor');
   }, [user]);
 
   useEffect(() => {
@@ -75,22 +76,31 @@ const SubmitArticlePage: React.FC = () => {
 
     setIsSubmitting(true);
     const dataToSubmit = {
-      title, abstract_en, keywords_en, journal: selectedJournal.id, 
+      title, 
+      abstract_en, 
+      keywords_en, 
+      journal: selectedJournal.id, 
       category: "Default",
-      submissionReceiptFile: receiptFile, finalVersionFile: articleFile,
+      submissionReceiptFile: receiptFile, 
+      finalVersionFile: articleFile,
     };
     const formData = createFormData(dataToSubmit);
 
     try {
-        await apiService.post('/articles/', formData, {
+        const response = await apiService.post('/articles/', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-        setSuccessMessage("Maqola muvaffaqiyatli yuborildi!");
-        setTimeout(() => navigate('/my-articles'), 2000);
+        
+        if (response.data && response.data.payment_url) {
+            setSuccessMessage("Ma'lumotlar qabul qilindi. To'lov sahifasiga yo'naltirilmoqda...");
+            window.location.href = response.data.payment_url;
+        } else {
+            setError("To'lov manzilini olishda xatolik yuz berdi. Iltimos, administrator bilan bog'laning.");
+            setIsSubmitting(false);
+        }
     } catch (err: any) {
-        const errorMessage = err.response?.data ? Object.values(err.response.data).flat().join(' ') : "Xatolik yuz berdi.";
+        const errorMessage = err.response?.data ? JSON.stringify(err.response.data) : "Server bilan bog'lanishda xatolik yuz berdi.";
         setError(errorMessage);
-    } finally {
         setIsSubmitting(false);
     }
   };
@@ -202,7 +212,7 @@ const SubmitArticlePage: React.FC = () => {
                     </div>
                 </Card>
                 <Button type="submit" fullWidth isLoading={isSubmitting} disabled={isSubmitting} leftIcon={<DocumentArrowUpIcon className="h-5 w-5"/>}>
-                    Maqolani Yuborish
+                    To'lovga o'tish
                 </Button>
             </div>
         </div>

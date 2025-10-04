@@ -446,15 +446,17 @@ export const LocalizationKeys = {
   AMOUNT: 'amount',
   PAYMENT_FOR_ARTICLE: 'payment_for_article',
   NO_TRANSACTIONS_FOUND: 'no_transactions_found',
+  XIZMATLAR: 'xizmatlar',
+  BOSMA_NASHRLAR: 'bosma_nashrlar'
 };
 
 // Bu NAV_LINKS objecti yangilangan
 export const NAV_LINKS = {
   [UserRole.CLIENT]: [
     { path: '/dashboard', labelKey: 'boshqaruv_paneli' },
-    { path: '/submit-article', labelKey: 'maqola_yuborish' },
+    { path: '/journals', labelKey: 'jurnallar' }, // Changed from 'maqola_yuborish'
     { path: '/my-articles', labelKey: 'mening_maqolalarim' },
-    { path: '/apply-for-editorship', labelKey: 'Tahririyatga ariza' },
+    { path: '/services', labelKey: 'xizmatlar' },
     { path: '/profile', labelKey: 'profil_sahifasi' },
   ],
   [UserRole.JOURNAL_MANAGER]: [

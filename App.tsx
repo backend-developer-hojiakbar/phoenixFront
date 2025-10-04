@@ -22,6 +22,27 @@ import LoadingSpinner from './components/common/LoadingSpinner';
 import EditorialApplicationPage from './pages/author/EditorialApplicationPage';
 import ApplicationsOverviewPage from './pages/admin/ApplicationsOverviewPage';
 import FinancialReportPage from './pages/accountant/FinancialReportPage';
+import PlagiarismCheckPage from './pages/author/PlagiarismCheckPage';
+import AIDocumentUtilitiesPage from './pages/author/AIDocumentUtilitiesPage';
+import ServicesPage from './pages/author/ServicesPage';
+import PrintedPublicationsPage from './pages/author/PrintedPublicationsPage';
+import TranslationServicePage from './pages/author/TranslationServicePage';
+import ArticleWritingPage from './pages/author/ArticleWritingPage';
+import EditorCommunicationPage from './pages/author/EditorCommunicationPage';
+import LiteracyCheckPage from './pages/author/LiteracyCheckPage';
+import UDCClassificationPage from './pages/author/UDCClassificationPage';
+import ORCIDIntegrationPage from './pages/author/ORCIDIntegrationPage';
+import CalendarServicePage from './pages/author/CalendarServicePage';
+import DocumentPreviewPage from './pages/author/DocumentPreviewPage';
+import CoAuthorManagementPage from './pages/author/CoAuthorManagementPage';
+import StatisticalReportsPage from './pages/author/StatisticalReportsPage';
+import GoogleScholarIndexingPage from './pages/author/GoogleScholarIndexingPage';
+import JournalsPage from './pages/public/JournalsPage';
+import JournalDetailPage from './pages/public/JournalDetailPage';
+import JournalArticleSubmissionPage from './pages/public/JournalArticleSubmissionPage';
+import JournalEditorialApplicationPage from './pages/public/JournalEditorialApplicationPage';
+import PaymentStatusPage from './pages/PaymentStatusPage';
+
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: UserRole[] }> = ({ children, roles }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -47,17 +68,39 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/payment-status" element={<ProtectedRoute><PaymentStatusPage /></ProtectedRoute>} />
         
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Navigate to="/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="profile" element={<ProfilePage />} />
 
+          <Route path="journals" element={<JournalsPage />} />
+          <Route path="journals/:journalId" element={<JournalDetailPage />} />
+          <Route path="journals/:journalId/submit-article" element={<ProtectedRoute roles={[UserRole.CLIENT]}><JournalArticleSubmissionPage /></ProtectedRoute>} />
+          <Route path="journals/:journalId/apply-for-editorship" element={<ProtectedRoute roles={[UserRole.CLIENT]}><JournalEditorialApplicationPage /></ProtectedRoute>} />
+
           <Route path="submit-article" element={<ProtectedRoute roles={[UserRole.CLIENT]}><SubmitArticlePage /></ProtectedRoute>} />
           <Route path="my-articles" element={<ProtectedRoute roles={[UserRole.CLIENT]}><MyArticlesPage /></ProtectedRoute>} />
           <Route path="my-articles/:articleId" element={<ProtectedRoute roles={[UserRole.CLIENT]}><ArticleDetailPage /></ProtectedRoute>} />
+          <Route path="services" element={<ProtectedRoute roles={[UserRole.CLIENT]}><ServicesPage /></ProtectedRoute>} />
           <Route path="apply-for-editorship" element={<ProtectedRoute roles={[UserRole.CLIENT]}><EditorialApplicationPage /></ProtectedRoute>} />
-
+          
+          <Route path="plagiarism-check" element={<ProtectedRoute roles={[UserRole.CLIENT]}><PlagiarismCheckPage /></ProtectedRoute>} />
+          <Route path="ai-document-utilities" element={<ProtectedRoute roles={[UserRole.CLIENT]}><AIDocumentUtilitiesPage /></ProtectedRoute>} />
+          <Route path="printed-publications" element={<ProtectedRoute roles={[UserRole.CLIENT]}><PrintedPublicationsPage /></ProtectedRoute>} />
+          <Route path="translation-service" element={<ProtectedRoute roles={[UserRole.CLIENT]}><TranslationServicePage /></ProtectedRoute>} />
+          <Route path="article-writing" element={<ProtectedRoute roles={[UserRole.CLIENT]}><ArticleWritingPage /></ProtectedRoute>} />
+          <Route path="editor-communication" element={<ProtectedRoute roles={[UserRole.CLIENT]}><EditorCommunicationPage /></ProtectedRoute>} />
+          <Route path="literacy-check" element={<ProtectedRoute roles={[UserRole.CLIENT]}><LiteracyCheckPage /></ProtectedRoute>} />
+          <Route path="udc-classification" element={<ProtectedRoute roles={[UserRole.CLIENT]}><UDCClassificationPage /></ProtectedRoute>} />
+          <Route path="orcid-integration" element={<ProtectedRoute roles={[UserRole.CLIENT]}><ORCIDIntegrationPage /></ProtectedRoute>} />
+          <Route path="calendar-service" element={<ProtectedRoute roles={[UserRole.CLIENT]}><CalendarServicePage /></ProtectedRoute>} />
+          <Route path="document-preview" element={<ProtectedRoute roles={[UserRole.CLIENT]}><DocumentPreviewPage /></ProtectedRoute>} />
+          <Route path="coauthor-management" element={<ProtectedRoute roles={[UserRole.CLIENT]}><CoAuthorManagementPage /></ProtectedRoute>} />
+          <Route path="statistical-reports" element={<ProtectedRoute roles={[UserRole.CLIENT]}><StatisticalReportsPage /></ProtectedRoute>} />
+          <Route path="google-scholar-indexing" element={<ProtectedRoute roles={[UserRole.CLIENT]}><GoogleScholarIndexingPage /></ProtectedRoute>} />
+          
           <Route path="assigned-articles" element={<ProtectedRoute roles={[UserRole.JOURNAL_MANAGER]}><AssignedArticlesPage /></ProtectedRoute>} />
           <Route path="assigned-articles/:articleId" element={<ProtectedRoute roles={[UserRole.JOURNAL_MANAGER, UserRole.ADMIN]}><ArticleReviewPage /></ProtectedRoute>} />
           

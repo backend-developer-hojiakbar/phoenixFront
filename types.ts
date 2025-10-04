@@ -11,6 +11,15 @@ export enum Language {
   EN = 'en',
 }
 
+export interface LocalizedText {
+  [key: string]: string;
+}
+
+export interface NavItem {
+  path: string;
+  labelKey: string;
+}
+
 export interface User {
   id: number;
   phone: string;
@@ -116,4 +125,23 @@ export interface DashboardSummary {
   totalJournals?: number;
   totalArticles?: number;
   pendingAll?: number;
+}
+
+export interface Service {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  price: string;
+  is_active: boolean;
+}
+
+export interface ServiceOrder {
+    id: number;
+    user: User;
+    service: Service;
+    status: 'pending_payment' | 'in_progress' | 'completed' | 'cancelled';
+    form_data: Record<string, any>;
+    attached_file_url?: string;
+    created_at: string;
 }

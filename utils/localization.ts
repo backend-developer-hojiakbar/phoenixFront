@@ -9,6 +9,7 @@ interface Translations {
 export const translations: Translations = {
   [Language.UZ]: {
     maqola_muvaffaqiyatli_yuborildi: 'Maqola koʻrib chiqish uchun muvaffaqiyatli yuborildi!',
+    jurnallar: 'Jurnallar',
     [LocalizationKeys.APP_TITLE_FULL]: 'Phoenix Ilmiy Nashriyot Markazi',
     [LocalizationKeys.APP_TITLE_SHORT]: 'PINM',
     all_rights_reserved: 'Barcha huquqlar himoyalangan.',
@@ -654,6 +655,7 @@ export const translations: Translations = {
     notes_for_developers: 'Dasturchilar Uchun Eslatmalar',
     journal_selected_from_ai_suggestion: "'{journalName}' jurnali SI taklifi asosida tanlandi.",
     ai_suggested_journal_not_in_list: "SI taklif qilgan '{journalName}' jurnali joriy roʻyxatda mavjud emas. Iltimos, tekshiring yoki qoʻlda qoʻshing.",
+    xizmatlar: 'Xizmatlar',
     [LocalizationKeys.SUGGEST_TITLE_AI_BUTTON]: 'SI Bilan Taklif',
     [LocalizationKeys.SUGGEST_KEYWORDS_AI_BUTTON]: 'SI Bilan Taklif',
     [LocalizationKeys.SUGGEST_JOURNALS_AI_BUTTON]: 'SI Bilan Taklif',
@@ -768,6 +770,8 @@ export const translations: Translations = {
     [LocalizationKeys.AMOUNT]: 'Summa',
     [LocalizationKeys.PAYMENT_FOR_ARTICLE]: 'Maqola uchun toʻlov',
     [LocalizationKeys.NO_TRANSACTIONS_FOUND]: 'Tranzaksiyalar topilmadi.',
+    xizmatlar: 'Xizmatlar',
+    bosma_nashrlar: 'Bosma nashrlar',
     based_on_mock_data: 'Soxta ma\'lumotlarga asoslangan',
     mock_successful_payments: 'Soxta muvaffaqiyatli to\'lovlar',
   }
