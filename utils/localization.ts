@@ -770,7 +770,6 @@ export const translations: Translations = {
     [LocalizationKeys.AMOUNT]: 'Summa',
     [LocalizationKeys.PAYMENT_FOR_ARTICLE]: 'Maqola uchun toʻlov',
     [LocalizationKeys.NO_TRANSACTIONS_FOUND]: 'Tranzaksiyalar topilmadi.',
-    xizmatlar: 'Xizmatlar',
     bosma_nashrlar: 'Bosma nashrlar',
     based_on_mock_data: 'Soxta ma\'lumotlarga asoslangan',
     mock_successful_payments: 'Soxta muvaffaqiyatli to\'lovlar',

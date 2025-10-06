@@ -5,7 +5,20 @@ import { UserRole, DashboardSummary, Article } from '../types';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import { useNavigate } from 'react-router-dom';
-import { DocumentPlusIcon, DocumentMagnifyingGlassIcon, UsersIcon, CogIcon, PresentationChartBarIcon, BanknotesIcon, DocumentCheckIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { 
+  DocumentPlusIcon, 
+  DocumentMagnifyingGlassIcon, 
+  UsersIcon, 
+  CogIcon, 
+  PresentationChartBarIcon, 
+  BanknotesIcon, 
+  DocumentCheckIcon, 
+  EyeIcon,
+  BookOpenIcon,
+  ChatBubbleLeftRightIcon,
+  DocumentTextIcon,
+  CheckBadgeIcon
+} from '@heroicons/react/24/outline';
 import apiService from '../services/apiService';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import Modal from '../components/common/Modal';
@@ -32,7 +45,7 @@ const DashboardPage: React.FC = () => {
         const { data } = await apiService.get<DashboardSummary>('/dashboard-summary/');
         setSummary(data);
     } catch (err) {
-        setError("Boshqaruv paneli ma'lumotlarini yuklashda xatolik.");
+        setError(translate('loading_user_data'));
         console.error("Failed to fetch dashboard summary", err);
     } finally {
         setIsLoading(false);
@@ -59,32 +72,32 @@ const DashboardPage: React.FC = () => {
       setIsModalOpen(false);
       await fetchSummary(); // Refresh dashboard data
     } catch (err: any) {
-      setError(err.response?.data?.error || "To'lovni tasdiqlashda xatolik.");
+      setError(err.response?.data?.error || translate('login_failed_default_error'));
     } finally {
       setIsApproving(false);
     }
   };
 
   const renderApprovalSection = () => (
-    <Card title="Tasdiqlanishi Kutilayotgan To'lovlar" icon={<DocumentCheckIcon className="h-6 w-6 text-accent-sky"/>}>
+    <Card title={translate('pending_payments_list_title', 'Tasdiqlanishi Kutilayotgan To\'lovlar')} icon={<DocumentCheckIcon className="h-6 w-6 text-accent-sky"/>}>
       {summary?.pending_payments_list && summary.pending_payments_list.length > 0 ? (
         <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-700">
-                <thead className="bg-slate-800">
+            <table className="modern-table">
+                <thead>
                     <tr>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-slate-300">Maqola</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-slate-300">Muallif</th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-slate-300">Amal</th>
+                        <th>{translate('article_title_label', 'Maqola')}</th>
+                        <th>{translate('author_label', 'Muallif')}</th>
+                        <th>{translate('action_label', 'Amal')}</th>
                     </tr>
                 </thead>
-                <tbody className="bg-secondary-dark divide-y divide-slate-700">
+                <tbody>
                     {summary.pending_payments_list.map(article => (
                         <tr key={article.id}>
-                            <td className="px-4 py-3 text-sm">{article.title}</td>
-                            <td className="px-4 py-3 text-sm">{article.author.name} {article.author.surname}</td>
-                            <td className="px-4 py-3">
+                            <td>{article.title}</td>
+                            <td>{article.author.name} {article.author.surname}</td>
+                            <td>
                                 <Button size="sm" onClick={() => handleOpenApprovalModal(article)} leftIcon={<EyeIcon className="h-4 w-4"/>}>
-                                    Ko'rish va Tasdiqlash
+                                    {translate('view_and_approve_button', 'Ko\'rish va Tasdiqlash')}
                                 </Button>
                             </td>
                         </tr>
@@ -93,41 +106,121 @@ const DashboardPage: React.FC = () => {
             </table>
         </div>
       ) : (
-        <p className="text-center text-medium-text py-4">Tasdiqlanishi kutilayotgan to'lovlar mavjud emas.</p>
+        <p className="text-center text-medium-text py-4">{translate('no_pending_payments_message', 'Tasdiqlanishi kutilayotgan to\'lovlar mavjud emas.')}</p>
       )}
     </Card>
   );
 
   const renderClientDashboard = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card title={'Maqolalarim holati'}>
-        <p>Ko'rib chiqilmoqda: <span className="font-semibold">{summary?.pending || 0}</span></p>
-        <p>Qayta ishlash kerak: <span className="font-semibold">{summary?.revision || 0}</span></p>
-        <p>Qabul qilingan: <span className="font-semibold">{summary?.accepted || 0}</span></p>
-        <Button onClick={() => navigate('/submit-article')} leftIcon={<DocumentPlusIcon className="h-5 w-5"/>} className="mt-4">Yangi maqola yuborish</Button>
-      </Card>
+    <div className="modern-dashboard-grid">
+      <div className="modern-dashboard-card">
+        <div className="modern-dashboard-card-header">
+          <div className="modern-dashboard-card-icon bg-purple-500/10 text-purple-500">
+            <DocumentTextIcon className="h-6 w-6" />
+          </div>
+          <h3 className="modern-dashboard-card-title">{translate('articles_pending_review', 'Ko\'rib chiqilmoqda')}</h3>
+        </div>
+        <p className="modern-dashboard-card-value">{summary?.pending || 0}</p>
+      </div>
+      
+      <div className="modern-dashboard-card">
+        <div className="modern-dashboard-card-header">
+          <div className="modern-dashboard-card-icon bg-amber-500/10 text-amber-500">
+            <CogIcon className="h-6 w-6" />
+          </div>
+          <h3 className="modern-dashboard-card-title">{translate('articles_need_revision', 'Qayta ishlash kerak')}</h3>
+        </div>
+        <p className="modern-dashboard-card-value">{summary?.revision || 0}</p>
+      </div>
+      
+      <div className="modern-dashboard-card">
+        <div className="modern-dashboard-card-header">
+          <div className="modern-dashboard-card-icon bg-emerald-500/10 text-emerald-500">
+            <CheckBadgeIcon className="h-6 w-6" />
+          </div>
+          <h3 className="modern-dashboard-card-title">{translate('articles_accepted', 'Qabul qilingan')}</h3>
+        </div>
+        <p className="modern-dashboard-card-value">{summary?.accepted || 0}</p>
+      </div>
+      
+      <div className="modern-card">
+        <h2 className="modern-card-title mb-4">
+          <BookOpenIcon className="h-6 w-6 text-accent-sky mr-2" />
+          {translate('quick_actions', 'Tezkor Amallar')}
+        </h2>
+        <Button 
+          onClick={() => navigate('/submit-article')} 
+          leftIcon={<DocumentPlusIcon className="h-5 w-5"/>} 
+          className="w-full"
+        >
+          {translate('submit_new_article_button', 'Yangi maqola yuborish')}
+        </Button>
+      </div>
     </div>
   );
 
   const renderEditorDashboard = () => (
-     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card title={'Ko\'rib chiqish uchun maqolalar'}>
-        <p>Yangi kelganlar: <span className="font-semibold">{summary?.newSubmissions || 0}</span></p>
-        <p>Jarayonda: <span className="font-semibold">{summary?.reviewing || 0}</span></p>
-        <Button onClick={() => navigate('/assigned-articles')} leftIcon={<DocumentMagnifyingGlassIcon className="h-5 w-5"/>} className="mt-4">Maqolalarni ko'rish</Button>
-      </Card>
+    <div className="modern-dashboard-grid">
+      <div className="modern-dashboard-card">
+        <div className="modern-dashboard-card-header">
+          <div className="modern-dashboard-card-icon bg-sky-500/10 text-sky-500">
+            <DocumentPlusIcon className="h-6 w-6" />
+          </div>
+          <h3 className="modern-dashboard-card-title">{translate('new_submissions', 'Yangi kelganlar')}</h3>
+        </div>
+        <p className="modern-dashboard-card-value">{summary?.newSubmissions || 0}</p>
+      </div>
+      
+      <div className="modern-dashboard-card">
+        <div className="modern-dashboard-card-header">
+          <div className="modern-dashboard-card-icon bg-purple-500/10 text-purple-500">
+            <DocumentMagnifyingGlassIcon className="h-6 w-6" />
+          </div>
+          <h3 className="modern-dashboard-card-title">{translate('currently_reviewing', 'Jarayonda')}</h3>
+        </div>
+        <p className="modern-dashboard-card-value">{summary?.reviewing || 0}</p>
+      </div>
+      
+      <div className="modern-card">
+        <h2 className="modern-card-title mb-4">
+          <ChatBubbleLeftRightIcon className="h-6 w-6 text-accent-sky mr-2" />
+          {translate('quick_actions', 'Tezkor Amallar')}
+        </h2>
+        <Button 
+          onClick={() => navigate('/assigned-articles')} 
+          leftIcon={<DocumentMagnifyingGlassIcon className="h-5 w-5"/>} 
+          className="w-full"
+        >
+          {translate('view_assigned_articles_button', 'Maqolalarni ko\'rish')}
+        </Button>
+      </div>
     </div>
   );
   
   const renderAccountantDashboard = () => (
     <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card title={"Jami Tushum"} icon={<BanknotesIcon className="h-6 w-6 text-accent-emerald"/>}>
-                <p className="text-4xl font-bold">{new Intl.NumberFormat('uz-UZ').format( (summary?.total_submission_fees || 0) + (summary?.total_publication_fees || 0) )} UZS</p>
-            </Card>
-            <Card title={"Tasdiqlanishi kutilayotgan to'lovlar soni"} icon={<DocumentCheckIcon className="h-6 w-6 text-accent-sky"/>}>
-                <p className="text-4xl font-bold">{summary?.payments_pending_approval || 0}</p>
-            </Card>
+        <div className="modern-dashboard-grid">
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-emerald-500/10 text-emerald-500">
+                  <BanknotesIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('total_revenue', 'Jami Tushum')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">
+                {new Intl.NumberFormat('uz-UZ').format( (summary?.total_submission_fees || 0) + (summary?.total_publication_fees || 0) )} UZS
+              </p>
+            </div>
+            
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-amber-500/10 text-amber-500">
+                  <DocumentCheckIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('pending_payments_count', 'Tasdiqlanishi kutilayotgan to\'lovlar soni')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">{summary?.payments_pending_approval || 0}</p>
+            </div>
         </div>
         {renderApprovalSection()}
     </div>
@@ -135,63 +228,148 @@ const DashboardPage: React.FC = () => {
 
   const renderAdminDashboard = () => (
     <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card title={'Umumiy tizim holati'} icon={<PresentationChartBarIcon className="h-6 w-6 text-accent-sky"/>}>
-                <p>Foydalanuvchilar: {summary?.totalUsers || 0}</p>
-                <p>Jurnallar: {summary?.totalJournals || 0}</p>
-                <p>Maqolalar: {summary?.totalArticles || 0}</p>
-            </Card>
-            <Card title={"Jami Tushum"} icon={<BanknotesIcon className="h-6 w-6 text-accent-emerald"/>}>
-                 <p className="text-2xl font-bold">{new Intl.NumberFormat('uz-UZ').format( (summary?.total_submission_fees || 0) + (summary?.total_publication_fees || 0) )} UZS</p>
-            </Card>
-            <Card title={"Kutilayotgan to'lovlar"} icon={<DocumentCheckIcon className="h-6 w-6 text-accent-sky"/>}>
-                <p className="text-2xl font-bold">{summary?.payments_pending_approval || 0}</p>
-            </Card>
-             <Card title={'Boshqaruv'} icon={<CogIcon className="h-6 w-6 text-accent-purple"/>}>
-                <Button fullWidth variant="secondary" onClick={() => navigate('/user-management')} leftIcon={<UsersIcon className="h-5 w-5"/>}>Foydalanuvchilar</Button>
-             </Card>
+        <div className="modern-dashboard-grid">
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-sky-500/10 text-sky-500">
+                  <PresentationChartBarIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('total_users', 'Foydalanuvchilar')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">{summary?.totalUsers || 0}</p>
+            </div>
+            
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-purple-500/10 text-purple-500">
+                  <BookOpenIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('total_journals', 'Jurnallar')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">{summary?.totalJournals || 0}</p>
+            </div>
+            
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-emerald-500/10 text-emerald-500">
+                  <DocumentTextIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('total_articles_system', 'Maqolalar')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">{summary?.totalArticles || 0}</p>
+            </div>
+            
+            <div className="modern-dashboard-card">
+              <div className="modern-dashboard-card-header">
+                <div className="modern-dashboard-card-icon bg-amber-500/10 text-amber-500">
+                  <BanknotesIcon className="h-6 w-6" />
+                </div>
+                <h3 className="modern-dashboard-card-title">{translate('total_revenue', 'Jami Tushum')}</h3>
+              </div>
+              <p className="modern-dashboard-card-value">
+                {new Intl.NumberFormat('uz-UZ').format( (summary?.total_submission_fees || 0) + (summary?.total_publication_fees || 0) )} UZS
+              </p>
+            </div>
         </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="modern-card">
+            <h2 className="modern-card-title mb-4">
+              <UsersIcon className="h-6 w-6 text-accent-sky mr-2" />
+              {translate('user_management', 'Foydalanuvchilarni Boshqarish')}
+            </h2>
+            <Button 
+              fullWidth 
+              variant="secondary" 
+              onClick={() => navigate('/user-management')} 
+              leftIcon={<UsersIcon className="h-5 w-5"/>}
+            >
+              {translate('manage_users_button', 'Foydalanuvchilarni Boshqarish')}
+            </Button>
+          </div>
+          
+          <div className="modern-card">
+            <h2 className="modern-card-title mb-4">
+              <CogIcon className="h-6 w-6 text-accent-sky mr-2" />
+              {translate('system_settings', 'Tizim Sozlamalari')}
+            </h2>
+            <Button 
+              fullWidth 
+              variant="secondary" 
+              onClick={() => navigate('/system-settings')} 
+              leftIcon={<CogIcon className="h-5 w-5"/>}
+            >
+              {translate('go_to_system_settings', 'Tizim Sozlamalariga O\'tish')}
+            </Button>
+          </div>
+        </div>
+        
         {renderApprovalSection()}
     </div>
   );
   
   if (isLoading || !user) {
-    return <LoadingSpinner message={'Ma\'lumotlar yuklanmoqda...'} />;
+    return <LoadingSpinner message={translate('loading_user_data', 'Ma\'lumotlar yuklanmoqda...')} />;
   }
 
   return (
-    <>
-      <div className="space-y-8">
-        <h1 className="text-3xl font-bold text-light-text">Boshqaruv Paneli</h1>
-        {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
-
-        {user.role === UserRole.CLIENT && renderClientDashboard()}
-        {user.role === UserRole.JOURNAL_MANAGER && renderEditorDashboard()}
-        {user.role === UserRole.ACCOUNTANT && renderAccountantDashboard()}
-        {user.role === UserRole.ADMIN && renderAdminDashboard()}
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold text-light-text mb-2">{translate('dashboard', 'Boshqaruv Paneli')}</h1>
+        <p className="text-medium-text">{translate('dashboard_subtitle', 'Bu yerda sizning faoliyatingiz va tizim holati haqida umumiy ma’lumot.')}</p>
       </div>
       
+      {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
+
+      {user.role === UserRole.CLIENT && renderClientDashboard()}
+      {user.role === UserRole.JOURNAL_MANAGER && renderEditorDashboard()}
+      {user.role === UserRole.ACCOUNTANT && renderAccountantDashboard()}
+      {user.role === UserRole.ADMIN && renderAdminDashboard()}
+      
       {selectedArticle && (
-          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={`To'lovni tasdiqlash: ${selectedArticle.title}`} size="3xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                      <h4 className='text-lg font-semibold text-light-text mb-2'>Foydalanuvchi yuklagan kvitansiya</h4>
-                      <DocumentViewer fileUrl={selectedArticle.submissionReceiptFileUrl!} fileName="Kvitansiya" />
-                  </div>
-                  <div className="flex flex-col">
-                       <h4 className='text-lg font-semibold text-light-text mb-2'>Tasdiqlash</h4>
-                       <p className='text-medium-text mb-4'>Ushbu maqola uchun to'lov kvitansiyasini ko'rib chiqdingizmi? "Tasdiqlash" tugmasini bosish orqali maqola ko'rib chiqish jarayoniga o'tkaziladi.</p>
-                       <div className='mt-auto flex justify-end space-x-3'>
-                          <Button variant='secondary' onClick={() => setIsModalOpen(false)}>Bekor qilish</Button>
-                          <Button onClick={handleApprovePayment} isLoading={isApproving}>
-                              Tasdiqlash
-                          </Button>
-                       </div>
-                  </div>
+        <Modal 
+          isOpen={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          title={`${translate('approve_payment_title', 'To\'lovni tasdiqlash')}: ${selectedArticle.title}`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className='text-lg font-semibold text-light-text mb-3'>
+                {translate('uploaded_receipt', 'Foydalanuvchi yuklagan kvitansiya')}
+              </h4>
+              <DocumentViewer 
+                fileUrl={selectedArticle.submissionReceiptFileUrl!} 
+                fileName={translate('receipt', 'Kvitansiya')} 
+              />
+            </div>
+            <div className="flex flex-col">
+              <h4 className='text-lg font-semibold text-light-text mb-3'>
+                {translate('approval', 'Tasdiqlash')}
+              </h4>
+              <p className='text-medium-text mb-6'>
+                {translate('approve_payment_description', 'Ushbu maqola uchun to\'lov kvitansiyasini ko\'rib chiqdingizmi? "Tasdiqlash" tugmasini bosish orqali maqola ko\'rib chiqish jarayoniga o\'tkaziladi.')}
+              </p>
+              <div className='mt-auto flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3'>
+                <Button 
+                  variant='secondary' 
+                  onClick={() => setIsModalOpen(false)}
+                  className="w-full sm:w-auto"
+                >
+                  {translate('cancel_button', 'Bekor qilish')}
+                </Button>
+                <Button 
+                  onClick={handleApprovePayment} 
+                  isLoading={isApproving}
+                  className="w-full sm:w-auto"
+                >
+                  {translate('approve_button', 'Tasdiqlash')}
+                </Button>
               </div>
-          </Modal>
+            </div>
+          </div>
+        </Modal>
       )}
-    </>
+    </div>
   );
 };
 

@@ -7,13 +7,19 @@ import Input from '../../components/common/Input';
 import Textarea from '../../components/common/Textarea';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { BookOpenIcon, ArrowLeftIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, ArrowLeftIcon, CheckCircleIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import apiService from '../../services/apiService';
+import { useServices } from '../../contexts/ServicesContext';
+
+const SERVICE_SLUG = 'literacy-check';
 
 const LiteracyCheckPage: React.FC = () => {
     const { translate } = useLanguage();
     const { user } = useAuth();
     const navigate = useNavigate();
+    const { getServiceBySlug, isLoading: isLoadingServices } = useServices();
+    const service = getServiceBySlug(SERVICE_SLUG);
 
     const [documentFile, setDocumentFile] = useState<File | null>(null);
     const [documentContent, setDocumentContent] = useState('');
@@ -25,13 +31,10 @@ const LiteracyCheckPage: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setIsSubmitting(true);
-        setError(null);
         
         // Validation
         if ((!documentFile && !documentContent) || !contactPhone) {
             setError("Hujjat fayli yoki matn mazmunini kiriting va telefon raqamini kiriting.");
-            setIsSubmitting(false);
             return;
         }
         
@@ -39,28 +42,55 @@ const LiteracyCheckPage: React.FC = () => {
         const phoneRegex = /^\+?[0-9\s\-\(\)]+$/;
         if (!phoneRegex.test(contactPhone)) {
             setError("Iltimos, to'g'ri telefon raqamini kiriting.");
-            setIsSubmitting(false);
             return;
         }
         
-        // In a real application, you would submit this data to your backend API
-        // For now, we'll just simulate a successful submission
+        if (!service) {
+            setError("Xizmat topilmadi. Iltimos, keyinroq qayta urinib ko'ring.");
+            return;
+        }
+        
+        handlePaymentRequest();
+    };
+    
+    const handlePaymentRequest = async () => {
+        if (!service) return;
+        
+        setIsSubmitting(true);
+        setError(null);
+        
+        const formData = new FormData();
+        formData.append('service_id', String(service.id));
+        if (documentFile) {
+            formData.append('attached_file', documentFile);
+        }
+        formData.append('form_data_str', JSON.stringify({ 
+            documentContent, 
+            contactPhone,
+            fileName: documentFile?.name || ''
+        }));
+
         try {
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            
-            // Reset form
-            setDocumentFile(null);
-            setDocumentContent('');
-            setContactPhone('');
-            
-            setSuccessMessage("Savodxonlik tekshiruvi buyurtmangiz muvaffaqiyatli yuborildi! Siz bilan tez orada bog'lanamiz.");
-        } catch (err) {
-            setError("Buyurtmani yuborishda xatolik yuz berdi. Iltimos, keyinroq qayta urinib ko'ring.");
-        } finally {
+            const response = await apiService.post('/service-orders/', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+
+            if (response.data && response.data.payment_url) {
+                setSuccessMessage("Buyurtma qabul qilindi. To'lov sahifasiga yo'naltirilmoqda...");
+                window.location.href = response.data.payment_url;
+            } else {
+                setError("To'lov manzilini olishda xatolik.");
+                setIsSubmitting(false);
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.detail || "Buyurtmani yuborishda xatolik.");
             setIsSubmitting(false);
         }
     };
+
+    if (isLoadingServices) {
+        return <LoadingSpinner message="Xizmat ma'lumotlari yuklanmoqda..." />;
+    }
 
     return (
         <div className="space-y-6">
@@ -76,6 +106,15 @@ const LiteracyCheckPage: React.FC = () => {
             </div>
             
             <Card title="Savodxonlik Tekshiruvi Buyurtmasi" icon={<CheckCircleIcon className="h-6 w-6 text-accent-sky" />}>
+                {service && (
+                    <div className="mb-6 p-4 bg-slate-800 rounded-lg border border-slate-700">
+                        <h3 className="text-lg font-semibold text-light-text">Xizmat narxi</h3>
+                        <p className="text-2xl font-bold text-accent-sky mt-1">
+                            {new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS
+                        </p>
+                    </div>
+                )}
+                
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {successMessage && (
                         <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />
@@ -97,6 +136,7 @@ const LiteracyCheckPage: React.FC = () => {
                         <p className="mt-1 text-xs text-medium-text">
                             .doc, .docx yoki .pdf fayllarini yuklang
                         </p>
+                        {documentFile && <p className="text-xs text-slate-400 mt-1">Tanlangan fayl: {documentFile.name}</p>}
                     </div>
                     
                     <div className="relative">
@@ -137,9 +177,11 @@ const LiteracyCheckPage: React.FC = () => {
                         <Button 
                             type="submit" 
                             isLoading={isSubmitting}
+                            disabled={isSubmitting || !service}
+                            leftIcon={<ArrowUpOnSquareIcon className="h-5 w-5" />}
                             className="px-6"
                         >
-                            Tekshiruvni Buyurtma Qilish
+                            To'lovga o'tish
                         </Button>
                     </div>
                 </form>

@@ -28,6 +28,7 @@ const JournalArticleSubmissionPage: React.FC = () => {
   const [abstract_en, setAbstract] = useState('');
   const [keywords_en, setKeywords] = useState('');
   const [articleFile, setArticleFile] = useState<File | null>(null);
+  const [fileName, setFileName] = useState<string>(''); // Added to track file name
 
   const isPartner = useMemo(() => {
     if (!user) return false;
@@ -62,6 +63,13 @@ const JournalArticleSubmissionPage: React.FC = () => {
 
     if (!title || !abstract_en || !keywords_en || !articleFile || !journal) {
       setError("Iltimos, barcha maydonlarni to'ldiring va maqola faylini yuklang.");
+      return;
+    }
+
+    // Check file extension
+    const fileExtension = articleFile.name.split('.').pop()?.toLowerCase();
+    if (fileExtension !== 'doc' && fileExtension !== 'docx') {
+      setError("Iltimos, faqat .doc yoki .docx faylini yuklang.");
       return;
     }
 
@@ -126,7 +134,7 @@ const JournalArticleSubmissionPage: React.FC = () => {
       {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
       {successMessage && <Alert type="success" message={successMessage} />}
 
-      <Card>
+      <Card title="" icon={null}>
         <div className="flex items-start p-4 bg-slate-800 rounded-lg gap-4 border border-slate-700 mb-6">
           <img 
             src={journal.image_url || 'https://via.placeholder.com/150x80'} 
@@ -167,15 +175,23 @@ const JournalArticleSubmissionPage: React.FC = () => {
           />
           
           <div>
-            <label className="block text-sm font-medium text-light-text mb-1">Maqola fayli (.doc, .pdf)</label>
+            <label className="block text-sm font-medium text-light-text mb-1">Maqola fayli (.doc, .docx)</label>
             <Input 
               type="file" 
-              onChange={(e) => setArticleFile(e.target.files?.[0] || null)} 
+              accept=".doc,.docx"
+              onChange={(e) => {
+                const file = e.target.files?.[0] || null;
+                setArticleFile(file);
+                setFileName(file ? file.name : '');
+              }} 
               required 
             />
+            {fileName && (
+              <p className="text-xs text-slate-400 mt-1">Tanlangan fayl: {fileName}</p>
+            )}
           </div>
 
-          <Button 
+          <Button
             type="submit" 
             fullWidth 
             isLoading={isSubmitting} 

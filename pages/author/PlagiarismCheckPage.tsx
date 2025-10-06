@@ -13,7 +13,7 @@ import apiService from '../../services/apiService';
 import { Service } from '../../types';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { PlagiarismCertificate } from '../../components/common/PlagiarismCertificate';
+import PlagiarismCertificate from '../../components/common/PlagiarismCertificate';
 import { PlagiarismReport } from '../../components/common/PlagiarismReport';
 import { useServices } from '../../contexts/ServicesContext';
 

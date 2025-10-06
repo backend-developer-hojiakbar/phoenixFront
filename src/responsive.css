@@ -1,7 +1,316 @@
-/* Responsive CSS for Phoenix Scientific Publication Center */
+@media (max-width: 479px) {
+  /* Adjust font sizes for better readability on small screens */
+  body {
+    font-size: 13px;
+  }
+  
+  h1 {
+    font-size: 1.25rem;
+  }
+  
+  h2 {
+    font-size: 1.125rem;
+  }
+  
+  h3 {
+    font-size: 1rem;
+  }
+  
+  /* Adjust card padding for mobile */
+  .card, .modern-card {
+    padding: 0.75rem;
+  }
+  
+  /* Make tables scrollable on mobile */
+  .table-container, .modern-table-container {
+    overflow-x: auto;
+  }
+  
+  /* Adjust button sizes for touch targets */
+  .btn, .modern-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  /* Adjust form elements for better touch interaction */
+  input, select, textarea, .modern-input, .modern-select, .modern-textarea {
+    min-height: 44px;
+    padding: 0.5rem;
+  }
+  
+  /* Stack form elements vertically on mobile */
+  .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Adjust modal sizes for mobile */
+  .modal-content, .modern-modal {
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+  }
+  
+  /* Reduce padding in navigation */
+  .navbar, .modern-navbar {
+    padding: 0.25rem;
+  }
+  
+  /* Adjust sidebar navigation for mobile */
+  .sidebar-nav-item, .modern-sidebar-nav-item {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  /* Enhanced mobile styles for better visual appeal */
+  .admin-card, .modern-card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .admin-card:hover, .modern-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .admin-table th, .modern-table th {
+    background-color: #334155;
+    color: #f1f5f9;
+    font-weight: 600;
+    padding: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-table td, .modern-table td {
+    padding: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .admin-button-primary, .modern-button-primary {
+    background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  
+  .admin-button-primary:hover, .modern-button-primary:hover {
+    opacity: 0.9;
+    transform: scale(1.01);
+  }
+  
+  .admin-button-secondary, .modern-button-secondary {
+    background: #334155;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  
+  .admin-button-secondary:hover, .modern-button-secondary:hover {
+    background: #475569;
+  }
+  
+  .admin-button-danger, .modern-button-danger {
+    background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 0.375rem 0.75rem;
+    font-weight: 600;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+  
+  .admin-button-danger:hover, .modern-button-danger:hover {
+    opacity: 0.9;
+    transform: scale(1.01);
+  }
+  
+  .admin-input, .modern-input {
+    border-radius: 6px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+  }
+  
+  .admin-input:focus, .modern-input:focus {
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  }
+  
+  .admin-select, .modern-select {
+    border-radius: 6px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    padding: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+  }
+  
+  .admin-select:focus, .modern-select:focus {
+    border-color: #8B5CF6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  }
+  
+  /* Enhanced admin-specific styles */
+  .admin-gradient-bg {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  }
 
-/* Mobile First Styles */
-@media (max-width: 767px) {
+  .admin-card-gradient, .modern-card {
+    background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .admin-card-gradient:hover, .modern-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-table-header {
+    background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
+  }
+
+  .admin-status-badge, .modern-badge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.625rem;
+  }
+
+  .admin-action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.125rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.75rem;
+    transition: all 0.2s ease;
+  }
+
+  .admin-action-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .admin-filter-grid {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .admin-modal-content, .modern-modal {
+    border-radius: 0.75rem;
+    background: #1E293B;
+    border: 1px solid #334155;
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.25);
+  }
+
+  .admin-modal-header, .modern-modal-header {
+    border-bottom: 1px solid #334155;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-modal-footer, .modern-modal-footer {
+    border-top: 1px solid #334155;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .admin-form-group, .modern-form-group {
+    margin-bottom: 0.75rem;
+  }
+
+  .admin-form-label, .modern-form-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    color: #f1f5f9;
+    font-size: 0.75rem;
+  }
+
+  .admin-alert, .modern-alert {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .admin-alert-success, .modern-alert-success {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+  }
+
+  .admin-alert-error, .modern-alert-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+  
+  /* Grid adjustments for extra small screens */
+  .grid-cols-1-xs {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .grid-cols-2-xs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  /* Hide desktop elements on extra small screens */
+  .hidden-xs {
+    display: none !important;
+  }
+  
+  /* Mobile-specific improvements */
+  .mobile-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+  }
+  
+  .mobile-p-2 {
+    padding: 0.5rem !important;
+  }
+  
+  .mobile-m-2 {
+    margin: 0.5rem !important;
+  }
+  
+  .mobile-text-center {
+    text-align: center !important;
+  }
+  
+  .mobile-flex-col {
+    flex-direction: column !important;
+  }
+  
+  .mobile-items-center {
+    align-items: center !important;
+  }
+  
+  .mobile-justify-center {
+    justify-content: center !important;
+  }
+  
+  .mobile-gap-2 {
+    gap: 0.5rem !important;
+  }
+}
+
+/* Small Devices (Mobile Phones) */
+@media (min-width: 480px) and (max-width: 767px) {
   /* Adjust font sizes for better readability on small screens */
   body {
     font-size: 14px;
@@ -20,23 +329,23 @@
   }
   
   /* Adjust card padding for mobile */
-  .card {
+  .card, .modern-card {
     padding: 1rem;
   }
   
   /* Make tables scrollable on mobile */
-  .table-container {
+  .table-container, .modern-table-container {
     overflow-x: auto;
   }
   
   /* Adjust button sizes for touch targets */
-  .btn {
+  .btn, .modern-button {
     min-height: 44px;
     min-width: 44px;
   }
   
   /* Adjust form elements for better touch interaction */
-  input, select, textarea {
+  input, select, textarea, .modern-input, .modern-select, .modern-textarea {
     min-height: 44px;
   }
   
@@ -47,44 +356,44 @@
   }
   
   /* Adjust modal sizes for mobile */
-  .modal-content {
+  .modal-content, .modern-modal {
     margin: 1rem;
     max-height: calc(100vh - 2rem);
   }
   
   /* Reduce padding in navigation */
-  .navbar {
+  .navbar, .modern-navbar {
     padding: 0.5rem;
   }
   
   /* Adjust sidebar navigation for mobile */
-  .sidebar-nav-item {
+  .sidebar-nav-item, .modern-sidebar-nav-item {
     padding: 0.75rem 0.5rem;
   }
   
   /* Enhanced mobile styles for better visual appeal */
-  .admin-card {
+  .admin-card, .modern-card {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
   }
   
-  .admin-card:hover {
+  .admin-card:hover, .modern-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
   
-  .admin-table th {
+  .admin-table th, .modern-table th {
     background-color: #334155;
     color: #f1f5f9;
     font-weight: 600;
   }
   
-  .admin-table td {
+  .admin-table td, .modern-table td {
     padding: 0.5rem;
   }
   
-  .admin-button-primary {
+  .admin-button-primary, .modern-button-primary {
     background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
     border: none;
     border-radius: 8px;
@@ -93,12 +402,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-primary:hover {
+  .admin-button-primary:hover, .modern-button-primary:hover {
     opacity: 0.9;
     transform: scale(1.02);
   }
   
-  .admin-button-secondary {
+  .admin-button-secondary, .modern-button-secondary {
     background: #334155;
     border: 1px solid #475569;
     border-radius: 8px;
@@ -107,11 +416,11 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-secondary:hover {
+  .admin-button-secondary:hover, .modern-button-secondary:hover {
     background: #475569;
   }
   
-  .admin-button-danger {
+  .admin-button-danger, .modern-button-danger {
     background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
     border: none;
     border-radius: 8px;
@@ -120,12 +429,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-danger:hover {
+  .admin-button-danger:hover, .modern-button-danger:hover {
     opacity: 0.9;
     transform: scale(1.02);
   }
   
-  .admin-input {
+  .admin-input, .modern-input {
     border-radius: 8px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -133,12 +442,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-input:focus {
+  .admin-input:focus, .modern-input:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
   }
   
-  .admin-select {
+  .admin-select, .modern-select {
     border-radius: 8px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -146,7 +455,7 @@
     transition: all 0.2s ease;
   }
   
-  .admin-select:focus {
+  .admin-select:focus, .modern-select:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
   }
@@ -156,7 +465,7 @@
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   }
 
-  .admin-card-gradient {
+  .admin-card-gradient, .modern-card {
     background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 12px;
@@ -164,7 +473,7 @@
     transition: all 0.3s ease;
   }
 
-  .admin-card-gradient:hover {
+  .admin-card-gradient:hover, .modern-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
@@ -173,7 +482,7 @@
     background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
   }
 
-  .admin-status-badge {
+  .admin-status-badge, .modern-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-weight: 600;
@@ -200,52 +509,82 @@
     gap: 1rem;
   }
 
-  .admin-modal-content {
+  .admin-modal-content, .modern-modal {
     border-radius: 1rem;
     background: #1E293B;
     border: 1px solid #334155;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
-  .admin-modal-header {
+  .admin-modal-header, .modern-modal-header {
     border-bottom: 1px solid #334155;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
 
-  .admin-modal-footer {
+  .admin-modal-footer, .modern-modal-footer {
     border-top: 1px solid #334155;
     padding-top: 1rem;
     margin-top: 1rem;
   }
 
-  .admin-form-group {
+  .admin-form-group, .modern-form-group {
     margin-bottom: 1.25rem;
   }
 
-  .admin-form-label {
+  .admin-form-label, .modern-form-label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #f1f5f9;
   }
 
-  .admin-alert {
+  .admin-alert, .modern-alert {
     border-radius: 0.75rem;
     padding: 1rem;
     margin-bottom: 1rem;
   }
 
-  .admin-alert-success {
+  .admin-alert-success, .modern-alert-success {
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.3);
     color: #34d399;
   }
 
-  .admin-alert-error {
+  .admin-alert-error, .modern-alert-error {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     color: #f87171;
+  }
+  
+  /* Grid adjustments for small screens */
+  .grid-cols-1-sm {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .grid-cols-2-sm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-cols-3-sm {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  /* Mobile improvements */
+  .mobile-grid-sm {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .mobile-full-width-sm {
+    width: 100% !important;
+  }
+  
+  .mobile-p-4 {
+    padding: 1rem !important;
+  }
+  
+  .mobile-m-4 {
+    margin: 1rem !important;
   }
 }
 
@@ -256,40 +595,40 @@
   }
   
   /* Adjust card padding for tablets */
-  .card {
+  .card, .modern-card {
     padding: 1.25rem;
   }
   
   /* Adjust modal sizes for tablets */
-  .modal-content {
+  .modal-content, .modern-modal {
     margin: 2rem;
     max-width: 600px;
   }
   
   /* Enhanced tablet styles */
-  .admin-card {
+  .admin-card, .modern-card {
     border-radius: 16px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
   }
   
-  .admin-card:hover {
+  .admin-card:hover, .modern-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
   
-  .admin-table th {
+  .admin-table th, .modern-table th {
     background-color: #334155;
     color: #f1f5f9;
     font-weight: 600;
     padding: 0.75rem;
   }
   
-  .admin-table td {
+  .admin-table td, .modern-table td {
     padding: 0.75rem;
   }
   
-  .admin-button-primary {
+  .admin-button-primary, .modern-button-primary {
     background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
     border: none;
     border-radius: 8px;
@@ -298,12 +637,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-primary:hover {
+  .admin-button-primary:hover, .modern-button-primary:hover {
     opacity: 0.9;
     transform: scale(1.02);
   }
   
-  .admin-button-secondary {
+  .admin-button-secondary, .modern-button-secondary {
     background: #334155;
     border: 1px solid #475569;
     border-radius: 8px;
@@ -312,11 +651,11 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-secondary:hover {
+  .admin-button-secondary:hover, .modern-button-secondary:hover {
     background: #475569;
   }
   
-  .admin-button-danger {
+  .admin-button-danger, .modern-button-danger {
     background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
     border: none;
     border-radius: 8px;
@@ -325,12 +664,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-danger:hover {
+  .admin-button-danger:hover, .modern-button-danger:hover {
     opacity: 0.9;
     transform: scale(1.02);
   }
   
-  .admin-input {
+  .admin-input, .modern-input {
     border-radius: 8px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -338,12 +677,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-input:focus {
+  .admin-input:focus, .modern-input:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
   }
   
-  .admin-select {
+  .admin-select, .modern-select {
     border-radius: 8px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -351,7 +690,7 @@
     transition: all 0.2s ease;
   }
   
-  .admin-select:focus {
+  .admin-select:focus, .modern-select:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
   }
@@ -361,7 +700,7 @@
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   }
 
-  .admin-card-gradient {
+  .admin-card-gradient, .modern-card {
     background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 16px;
@@ -369,7 +708,7 @@
     transition: all 0.3s ease;
   }
 
-  .admin-card-gradient:hover {
+  .admin-card-gradient:hover, .modern-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
@@ -378,7 +717,7 @@
     background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
   }
 
-  .admin-status-badge {
+  .admin-status-badge, .modern-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-weight: 600;
@@ -406,96 +745,113 @@
     gap: 1rem;
   }
 
-  .admin-modal-content {
+  .admin-modal-content, .modern-modal {
     border-radius: 1rem;
     background: #1E293B;
     border: 1px solid #334155;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
-  .admin-modal-header {
+  .admin-modal-header, .modern-modal-header {
     border-bottom: 1px solid #334155;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
   }
 
-  .admin-modal-footer {
+  .admin-modal-footer, .modern-modal-footer {
     border-top: 1px solid #334155;
     padding-top: 1rem;
     margin-top: 1rem;
   }
 
-  .admin-form-group {
+  .admin-form-group, .modern-form-group {
     margin-bottom: 1.25rem;
   }
 
-  .admin-form-label {
+  .admin-form-label, .modern-form-label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #f1f5f9;
   }
 
-  .admin-alert {
+  .admin-alert, .modern-alert {
     border-radius: 0.75rem;
     padding: 1rem;
     margin-bottom: 1rem;
   }
 
-  .admin-alert-success {
+  .admin-alert-success, .modern-alert-success {
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.3);
     color: #34d399;
   }
 
-  .admin-alert-error {
+  .admin-alert-error, .modern-alert-error {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     color: #f87171;
   }
+  
+  /* Grid adjustments for tablets */
+  .grid-cols-1-md {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .grid-cols-2-md {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-cols-3-md {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .grid-cols-4-md {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* Desktop Styles */
-@media (min-width: 1024px) {
+@media (min-width: 1024px) and (max-width: 1279px) {
   body {
     font-size: 16px;
   }
   
   /* Adjust card padding for desktop */
-  .card {
+  .card, .modern-card {
     padding: 1.5rem;
   }
   
   /* Adjust modal sizes for desktop */
-  .modal-content {
+  .modal-content, .modern-modal {
     margin: 3rem auto;
     max-width: 800px;
   }
   
   /* Enhanced desktop styles */
-  .admin-card {
+  .admin-card, .modern-card {
     border-radius: 20px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
   }
   
-  .admin-card:hover {
+  .admin-card:hover, .modern-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   }
   
-  .admin-table th {
+  .admin-table th, .modern-table th {
     background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
     color: #f1f5f9;
     font-weight: 600;
     padding: 1rem;
   }
   
-  .admin-table td {
+  .admin-table td, .modern-table td {
     padding: 1rem;
   }
   
-  .admin-button-primary {
+  .admin-button-primary, .modern-button-primary {
     background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
     border: none;
     border-radius: 10px;
@@ -504,12 +860,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-primary:hover {
+  .admin-button-primary:hover, .modern-button-primary:hover {
     opacity: 0.9;
     transform: scale(1.03);
   }
   
-  .admin-button-secondary {
+  .admin-button-secondary, .modern-button-secondary {
     background: #334155;
     border: 1px solid #475569;
     border-radius: 10px;
@@ -518,11 +874,11 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-secondary:hover {
+  .admin-button-secondary:hover, .modern-button-secondary:hover {
     background: #475569;
   }
   
-  .admin-button-danger {
+  .admin-button-danger, .modern-button-danger {
     background: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
     border: none;
     border-radius: 10px;
@@ -531,12 +887,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-button-danger:hover {
+  .admin-button-danger:hover, .modern-button-danger:hover {
     opacity: 0.9;
     transform: scale(1.03);
   }
   
-  .admin-input {
+  .admin-input, .modern-input {
     border-radius: 10px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -544,12 +900,12 @@
     transition: all 0.2s ease;
   }
   
-  .admin-input:focus {
+  .admin-input:focus, .modern-input:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
   }
   
-  .admin-select {
+  .admin-select, .modern-select {
     border-radius: 10px;
     border: 1px solid #475569;
     background: #1e293b;
@@ -557,7 +913,7 @@
     transition: all 0.2s ease;
   }
   
-  .admin-select:focus {
+  .admin-select:focus, .modern-select:focus {
     border-color: #8B5CF6;
     box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.3);
   }
@@ -567,7 +923,7 @@
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
   }
 
-  .admin-card-gradient {
+  .admin-card-gradient, .modern-card {
     background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
     border: 1px solid rgba(148, 163, 184, 0.2);
     border-radius: 20px;
@@ -575,7 +931,7 @@
     transition: all 0.3s ease;
   }
 
-  .admin-card-gradient:hover {
+  .admin-card-gradient:hover, .modern-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
   }
@@ -584,7 +940,7 @@
     background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
   }
 
-  .admin-status-badge {
+  .admin-status-badge, .modern-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-weight: 600;
@@ -608,124 +964,207 @@
 
   .admin-filter-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
   }
 
-  .admin-modal-content {
+  .admin-modal-content, .modern-modal {
     border-radius: 1.25rem;
     background: #1E293B;
     border: 1px solid #334155;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
 
-  .admin-modal-header {
+  .admin-modal-header, .modern-modal-header {
     border-bottom: 1px solid #334155;
     padding-bottom: 1.25rem;
     margin-bottom: 1.25rem;
   }
 
-  .admin-modal-footer {
+  .admin-modal-footer, .modern-modal-footer {
     border-top: 1px solid #334155;
     padding-top: 1.25rem;
     margin-top: 1.25rem;
   }
 
-  .admin-form-group {
+  .admin-form-group, .modern-form-group {
     margin-bottom: 1.5rem;
   }
 
-  .admin-form-label {
+  .admin-form-label, .modern-form-label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
     color: #f1f5f9;
   }
 
-  .admin-alert {
+  .admin-alert, .modern-alert {
     border-radius: 0.875rem;
     padding: 1.25rem;
     margin-bottom: 1.25rem;
   }
 
-  .admin-alert-success {
+  .admin-alert-success, .modern-alert-success {
     background: rgba(16, 185, 129, 0.15);
     border: 1px solid rgba(16, 185, 129, 0.3);
     color: #34d399;
   }
 
-  .admin-alert-error {
+  .admin-alert-error, .modern-alert-error {
     background: rgba(239, 68, 68, 0.15);
     border: 1px solid rgba(239, 68, 68, 0.3);
     color: #f87171;
   }
+  
+  /* Grid adjustments for desktop */
+  .grid-cols-1-lg {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  
+  .grid-cols-2-lg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  
+  .grid-cols-3-lg {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  .grid-cols-4-lg {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* Large Screen Styles */
-@media (min-width: 1280px) {
+@media (min-width: 1280px) and (max-width: 1535px) {
   .container {
     max-width: 1200px;
   }
   
   /* Enhanced large screen styles */
-  .admin-card {
+  .admin-card, .modern-card {
     border-radius: 24px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   }
   
-  .admin-card:hover {
+  .admin-card:hover, .modern-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
   }
   
-  .admin-button-primary {
+  .admin-button-primary, .modern-button-primary {
     border-radius: 12px;
     padding: 0.875rem 1.75rem;
   }
   
-  .admin-button-secondary {
+  .admin-button-secondary, .modern-button-secondary {
     border-radius: 12px;
     padding: 0.875rem 1.75rem;
   }
   
-  .admin-button-danger {
+  .admin-button-danger, .modern-button-danger {
     border-radius: 12px;
     padding: 0.875rem 1.75rem;
   }
   
-  .admin-input {
+  .admin-input, .modern-input {
     border-radius: 12px;
     padding: 1.125rem;
   }
   
-  .admin-select {
+  .admin-select, .modern-select {
     border-radius: 12px;
     padding: 1.125rem;
   }
   
-  .admin-card-gradient {
+  .admin-card-gradient, .modern-card {
     border-radius: 24px;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   }
 
-  .admin-card-gradient:hover {
+  .admin-card-gradient:hover, .modern-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
   }
 
-  .admin-modal-content {
+  .admin-modal-content, .modern-modal {
     border-radius: 1.5rem;
   }
 
-  .admin-status-badge {
+  .admin-status-badge, .modern-badge {
     font-size: 0.875rem;
+  }
+  
+  .admin-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
   }
 }
 
-/* Ultra-wide Screen Styles */
+/* Extra Large Screen Styles */
 @media (min-width: 1536px) {
   .container {
     max-width: 1400px;
+  }
+  
+  /* Enhanced extra large screen styles */
+  .admin-card, .modern-card {
+    border-radius: 28px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin-card:hover, .modern-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  }
+  
+  .admin-button-primary, .modern-button-primary {
+    border-radius: 14px;
+    padding: 1rem 2rem;
+  }
+  
+  .admin-button-secondary, .modern-button-secondary {
+    border-radius: 14px;
+    padding: 1rem 2rem;
+  }
+  
+  .admin-button-danger, .modern-button-danger {
+    border-radius: 14px;
+    padding: 1rem 2rem;
+  }
+  
+  .admin-input, .modern-input {
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+  
+  .admin-select, .modern-select {
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+  
+  .admin-card-gradient, .modern-card {
+    border-radius: 28px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  }
+
+  .admin-card-gradient:hover, .modern-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-modal-content, .modern-modal {
+    border-radius: 1.75rem;
+  }
+
+  .admin-status-badge, .modern-badge {
+    font-size: 0.875rem;
+  }
+  
+  .admin-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
   }
 }
 
@@ -960,4 +1399,78 @@
 .admin-empty-state-description {
   color: #94a3b8;
   margin-bottom: 1.5rem;
+}
+
+/* Flexbox responsive adjustments */
+.flex-responsive {
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .flex-responsive {
+    flex-direction: row;
+  }
+}
+
+/* Margin and padding responsive adjustments */
+.m-responsive-4 {
+  margin: 1rem;
+}
+
+.p-responsive-4 {
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .m-responsive-4 {
+    margin: 1.5rem;
+  }
+  
+  .p-responsive-4 {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .m-responsive-4 {
+    margin: 2rem;
+  }
+  
+  .p-responsive-4 {
+    padding: 2rem;
+  }
+}
+
+/* Width responsive adjustments */
+.w-full-responsive {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .w-full-responsive {
+    width: 80%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .w-full-responsive {
+    width: 70%;
+  }
+}
+
+/* Height responsive adjustments */
+.h-screen-responsive {
+  height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .h-screen-responsive {
+    height: 90vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  .h-screen-responsive {
+    height: 85vh;
+  }
 }

@@ -43,7 +43,6 @@ import JournalArticleSubmissionPage from './pages/public/JournalArticleSubmissio
 import JournalEditorialApplicationPage from './pages/public/JournalEditorialApplicationPage';
 import PaymentStatusPage from './pages/PaymentStatusPage';
 
-
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: UserRole[] }> = ({ children, roles }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
 

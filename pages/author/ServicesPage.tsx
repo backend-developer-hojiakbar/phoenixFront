@@ -49,7 +49,7 @@ const ServicesPage = () => {
                 const response = await apiService.get<Service[]>('/services/');
                 setServices(response.data);
             } catch (err) {
-                setError("Xizmatlarni yuklashda xatolik yuz berdi.");
+                setError(translate('error_loading_services', "Xizmatlarni yuklashda xatolik yuz berdi."));
             } finally {
                 setIsLoading(false);
             }
@@ -60,7 +60,7 @@ const ServicesPage = () => {
     const findService = (slug) => services.find(s => s.slug === slug);
     
     if (isLoading) {
-        return <LoadingSpinner message="Xizmatlar yuklanmoqda..." />;
+        return <LoadingSpinner message={translate('loading_services', "Xizmatlar yuklanmoqda...")} />;
     }
 
     if (error) {
@@ -77,7 +77,7 @@ const ServicesPage = () => {
         'literacy-check': { icon: CheckCircleIcon, color: 'from-teal-900/50 to-teal-700/30 border-teal-500/30 hover:border-teal-500/60 bg-teal-500/20 text-teal-400' },
         'udc-classification': { icon: TagIcon, color: 'from-cyan-900/50 to-cyan-700/30 border-cyan-500/30 hover:border-cyan-500/60 bg-cyan-500/20 text-cyan-400' },
         'orcid-integration': { icon: IdentificationIcon, color: 'from-emerald-900/50 to-emerald-700/30 border-emerald-500/30 hover:border-emerald-500/60 bg-emerald-500/20 text-emerald-400' },
-        'calendar-service': { icon: CalendarDaysIcon, color: 'from-violet-900/50 to-violet-700/30 border-violet-500/30 hover:border-violet-500/60 bg-violet-500/20 text-violet-400' },
+        // 'calendar-service': { icon: CalendarDaysIcon, color: 'from-violet-900/50 to-violet-700/30 border-violet-500/30 hover:border-violet-500/60 bg-violet-500/20 text-violet-400' },
         'document-preview': { icon: EyeIcon, color: 'from-blue-900/50 to-blue-700/30 border-blue-500/30 hover:border-blue-500/60 bg-blue-500/20 text-blue-400' },
         'coauthor-management': { icon: UserGroupIcon, color: 'from-fuchsia-900/50 to-fuchsia-700/30 border-fuchsia-500/30 hover:border-fuchsia-500/60 bg-fuchsia-500/20 text-fuchsia-400' },
         'statistical-reports': { icon: ChartBarIcon, color: 'from-rose-900/50 to-rose-700/30 border-rose-500/30 hover:border-rose-500/60 bg-rose-500/20 text-rose-400' },
@@ -94,7 +94,7 @@ const ServicesPage = () => {
     };
 
     return (
-        <Card title={translate('xizmatlar', 'Xizmatlar')}>
+        <Card title={translate('services_title', 'Xizmatlar')}>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
                 {serviceOrder.map(slug => {
                     const serviceData = findService(slug);
@@ -116,7 +116,7 @@ const ServicesPage = () => {
                 })}
             </div>
              {services.length === 0 && !isLoading && (
-                <p className="text-center text-medium-text py-8">Hozircha faol xizmatlar mavjud emas.</p>
+                <p className="text-center text-medium-text py-8">{translate('no_active_services', 'Hozircha faol xizmatlar mavjud emas.')}</p>
             )}
         </Card>
     );
