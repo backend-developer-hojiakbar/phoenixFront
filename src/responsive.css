@@ -307,6 +307,38 @@
   .mobile-gap-2 {
     gap: 0.5rem !important;
   }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 0.75rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 0.875rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 1.25rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 80px;
+  }
+  
+  .plagiarism-button-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .plagiarism-button-group .modern-button {
+    width: 100%;
+  }
 }
 
 /* Small Devices (Mobile Phones) */
@@ -586,6 +618,38 @@
   .mobile-m-4 {
     margin: 1rem !important;
   }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 1rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 1rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 1.5rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 100px;
+  }
+  
+  .plagiarism-button-group {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  
+  .plagiarism-button-group .modern-button {
+    width: auto;
+  }
 }
 
 /* Tablet Styles */
@@ -808,6 +872,29 @@
   
   .grid-cols-4-md {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 1.25rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 1.125rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 1.75rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 120px;
   }
 }
 
@@ -1032,6 +1119,29 @@
   .grid-cols-4-lg {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 1.5rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 1.25rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 2rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 150px;
+  }
 }
 
 /* Large Screen Styles */
@@ -1098,6 +1208,29 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
+  }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 1.75rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 1.375rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 2.25rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 1.125rem;
+    font-size: 1.125rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 200px;
   }
 }
 
@@ -1166,6 +1299,29 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 1.25rem;
   }
+  
+  /* Plagiarism Check Page Specific Styles */
+  .plagiarism-price-card {
+    padding: 2rem;
+  }
+  
+  .plagiarism-price-card h3 {
+    font-size: 1.5rem;
+  }
+  
+  .plagiarism-price-card p {
+    font-size: 2.5rem;
+  }
+  
+  .plagiarism-history-table th,
+  .plagiarism-history-table td {
+    padding: 1.25rem;
+    font-size: 1.25rem;
+  }
+  
+  .plagiarism-history-table .max-w-xs {
+    max-width: 250px;
+  }
 }
 
 /* Helper classes for responsive design */
@@ -1199,278 +1355,101 @@
   .hidden-tablet {
     display: block;
   }
-}
-
-/* Touch-friendly adjustments */
-.touch-friendly {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0.5rem 1rem;
-}
-
-/* Responsive grid adjustments */
-.grid-responsive {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-}
-
-/* Responsive typography */
-.responsive-text-sm {
-  font-size: 0.75rem;
-}
-
-.responsive-text-base {
-  font-size: 0.875rem;
-}
-
-.responsive-text-lg {
-  font-size: 1rem;
-}
-
-@media (min-width: 768px) {
-  .responsive-text-sm {
-    font-size: 0.875rem;
-  }
   
-  .responsive-text-base {
-    font-size: 1rem;
+  .hidden-desktop {
+    display: none;
   }
-  
-  .responsive-text-lg {
-    font-size: 1.125rem;
-  }
+}
+
+/* Responsive utility classes for the Plagiarism Check Page */
+.plagiarism-responsive-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 @media (min-width: 1024px) {
-  .responsive-text-sm {
-    font-size: 0.875rem;
-  }
-  
-  .responsive-text-base {
-    font-size: 1rem;
-  }
-  
-  .responsive-text-lg {
-    font-size: 1.25rem;
+  .plagiarism-responsive-grid {
+    grid-template-columns: 2fr 1fr;
   }
 }
 
-/* Additional beautiful admin styles */
-.admin-section-title {
-  position: relative;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid rgba(139, 92, 246, 0.3);
-}
-
-.admin-section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(90deg, #8B5CF6, #0EA5E9);
-  border-radius: 1px;
-}
-
-.admin-stat-card {
-  background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.admin-stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-}
-
-.admin-stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.admin-stat-label {
-  font-size: 0.875rem;
-  color: #94a3b8;
-  margin-top: 0.5rem;
-}
-
-.admin-icon-button {
+.plagiarism-file-info {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  transition: all 0.2s ease;
-}
-
-.admin-icon-button:hover {
-  background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
-  transform: scale(1.1);
-}
-
-.admin-data-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.admin-data-table th {
-  background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
-  color: #f1f5f9;
-  font-weight: 600;
-  padding: 1rem;
-  text-align: left;
-}
-
-.admin-data-table td {
-  padding: 1rem;
-  border-bottom: 1px solid #334155;
-}
-
-.admin-data-table tr:last-child td {
-  border-bottom: none;
-}
-
-.admin-data-table tr:hover td {
-  background-color: rgba(148, 163, 184, 0.05);
-}
-
-.admin-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1.5rem;
-}
-
-.admin-pagination-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: #334155;
-  border: 1px solid #475569;
-  color: #f1f5f9;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.admin-pagination-button:hover {
-  background: #475569;
-}
-
-.admin-pagination-button.active {
-  background: linear-gradient(135deg, #8B5CF6 0%, #0EA5E9 100%);
-  border-color: #8B5CF6;
-}
-
-.admin-empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-}
-
-.admin-empty-state-icon {
-  width: 4rem;
-  height: 4rem;
-  margin: 0 auto 1rem;
-  color: #94a3b8;
-}
-
-.admin-empty-state-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  margin-bottom: 0.5rem;
-}
-
-.admin-empty-state-description {
-  color: #94a3b8;
-  margin-bottom: 1.5rem;
-}
-
-/* Flexbox responsive adjustments */
-.flex-responsive {
   flex-direction: column;
+  gap: 0.5rem;
 }
 
 @media (min-width: 768px) {
-  .flex-responsive {
+  .plagiarism-file-info {
     flex-direction: row;
+    align-items: center;
+    gap: 1rem;
   }
 }
 
-/* Margin and padding responsive adjustments */
-.m-responsive-4 {
-  margin: 1rem;
-}
-
-.p-responsive-4 {
-  padding: 1rem;
+.plagiarism-price-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 @media (min-width: 768px) {
-  .m-responsive-4 {
-    margin: 1.5rem;
+  .plagiarism-price-display {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
   }
-  
-  .p-responsive-4 {
-    padding: 1.5rem;
+}
+
+.plagiarism-history-header {
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .plagiarism-history-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.plagiarism-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .plagiarism-action-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+.plagiarism-document-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .plagiarism-document-info-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
-  .m-responsive-4 {
-    margin: 2rem;
-  }
-  
-  .p-responsive-4 {
-    padding: 2rem;
+  .plagiarism-document-info-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-/* Width responsive adjustments */
-.w-full-responsive {
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .w-full-responsive {
-    width: 80%;
-  }
-}
-
-@media (min-width: 1024px) {
-  .w-full-responsive {
-    width: 70%;
-  }
-}
-
-/* Height responsive adjustments */
-.h-screen-responsive {
-  height: 100vh;
-}
-
-@media (min-width: 768px) {
-  .h-screen-responsive {
-    height: 90vh;
-  }
-}
-
-@media (min-width: 1024px) {
-  .h-screen-responsive {
-    height: 85vh;
+@media (min-width: 1280px) {
+  .plagiarism-document-info-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }

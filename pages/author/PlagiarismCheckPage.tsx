@@ -7,7 +7,8 @@ import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import Textarea from '../../components/common/Textarea';
+import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon, InformationCircleIcon, DocumentTextIcon, DocumentIcon } from '@heroicons/react/24/outline';
 import { LocalizationKeys } from '../../constants';
 import apiService from '../../services/apiService';
 import { Service } from '../../types';
@@ -19,6 +20,16 @@ import { useServices } from '../../contexts/ServicesContext';
 
 const SERVICE_SLUG = 'plagiarism-check';
 
+// Document types for selection
+const DOCUMENT_TYPES = [
+  { id: 'article', name: 'Ilmiy maqola' },
+  { id: 'dissertation', name: 'Dissertatsiya' },
+  { id: 'abstract', name: 'Avtoreferat' },
+  { id: 'monograph', name: 'Monografiya' },
+  { id: 'report', name: 'Hisobot' },
+  { id: 'other', name: 'Boshqa' }
+];
+
 const PlagiarismCheckPage = () => {
     const { translate } = useLanguage();
     const { user } = useAuth();
@@ -26,6 +37,9 @@ const PlagiarismCheckPage = () => {
     const service = getServiceBySlug(SERVICE_SLUG);
     
     const [articleFile, setArticleFile] = useState(null);
+    const [documentName, setDocumentName] = useState(''); // New field for document name
+    const [documentType, setDocumentType] = useState(''); // New field for document type
+    const [documentDescription, setDocumentDescription] = useState(''); // New field for document description
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
@@ -77,6 +91,17 @@ const PlagiarismCheckPage = () => {
             return;
         }
         
+        // Validate required fields
+        if (!documentName.trim()) {
+            setError("Hujjat nomini kiriting.");
+            return;
+        }
+        
+        if (!documentType) {
+            setError("Hujjat turini tanlang.");
+            return;
+        }
+        
         setIsSubmitting(true);
         setError(null);
         
@@ -85,6 +110,9 @@ const PlagiarismCheckPage = () => {
             id: `check-${Date.now()}`,
             merchant_trans_id: merchantTransId,
             fileName: articleFile.name,
+            documentName, // Include document name
+            documentType, // Include document type
+            documentDescription, // Include document description
             date: new Date().toISOString(),
             status: 'pending_payment',
             result: null
@@ -94,8 +122,14 @@ const PlagiarismCheckPage = () => {
         const formData = new FormData();
         formData.append('service_id', String(service.id));
         formData.append('attached_file', articleFile);
-        formData.append('form_data_str', JSON.stringify({ fileName: articleFile.name, checkId: newHistoryItem.id }));
-        formData.append('merchant_trans_id_override', merchantTransId); // Agar backend qo'llab-quvvatlasa
+        formData.append('form_data_str', JSON.stringify({ 
+            fileName: articleFile.name, 
+            checkId: newHistoryItem.id,
+            documentName,
+            documentType,
+            documentDescription
+        }));
+        formData.append('merchant_trans_id_override', merchantTransId);
 
         try {
             const response = await apiService.post('/service-orders/', formData, {
@@ -180,57 +214,224 @@ const PlagiarismCheckPage = () => {
         }, 100);
     };
 
+    // Check if all required fields are filled
+    const isFormValid = () => {
+        return articleFile && service && documentName.trim() && documentType;
+    };
+
     if (isLoadingServices) {
         return <LoadingSpinner message="Xizmat ma'lumotlari yuklanmoqda..." />;
     }
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl md:text-3xl font-bold text-accent-sky flex items-center">
-                <DocumentCheckIcon className="h-6 w-6 md:h-8 md:w-8 mr-2 md:mr-3 text-accent-purple" />
-                {service?.name || translate(LocalizationKeys.PLAGIARISM_CHECKER_PAGE_TITLE)}
-            </h1>
-
-            <Card title={translate(LocalizationKeys.UPLOAD_DOCUMENT_FOR_PLAGIARISM_CHECK_LABEL)} icon={<DocumentCheckIcon className="h-6 w-6 text-purple-400" />}>
-                 {service && (
-                    <div className="mb-6 p-4 bg-slate-800 rounded-lg border border-slate-700">
-                        <h3 className="text-lg font-semibold text-light-text">Xizmat narxi</h3>
-                        <p className="text-2xl font-bold text-accent-sky mt-1">{new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS</p>
+            <div className="plagiarism-price-display">
+                <h1 className="text-2xl md:text-3xl font-bold text-accent-sky flex items-center">
+                    <DocumentCheckIcon className="h-6 w-6 md:h-8 md:w-8 mr-2 md:mr-3 text-accent-purple" />
+                    {service?.name || translate(LocalizationKeys.PLAGIARISM_CHECKER_PAGE_TITLE)}
+                </h1>
+                {service && (
+                    <div className="plagiarism-price-card bg-gradient-to-r from-accent-purple to-accent-sky rounded-lg p-4 shadow-lg mt-4 md:mt-0">
+                        <p className="text-sm text-light-text opacity-90">Xizmat narxi</p>
+                        <p className="text-2xl font-bold text-white">{new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS</p>
                     </div>
                 )}
-                
-                <div className="mb-4">
-                    <label htmlFor="articleFile" className="block text-sm font-medium text-light-text mb-1">.doc, .docx, .pdf</label>
-                    <Input type="file" id="articleFile" name="articleFile" accept=".doc,.docx,.pdf" onChange={(e) => setArticleFile(e.target.files?.[0])} wrapperClassName="mb-0" />
-                    {articleFile && <p className="text-xs text-slate-400 mt-1">Tanlangan fayl: {articleFile.name}</p>}
+            </div>
+
+            <div className="plagiarism-responsive-grid gap-6">
+                <div>
+                    <Card title={translate(LocalizationKeys.UPLOAD_DOCUMENT_FOR_PLAGIARISM_CHECK_LABEL)} icon={<DocumentCheckIcon className="h-6 w-6 text-purple-400" />} className="h-full">
+                        <div className="space-y-6">
+                            {/* Document Name Field */}
+                            <div>
+                                <label htmlFor="documentName" className="block text-sm font-medium text-light-text mb-2">
+                                    Hujjat nomi <span className="text-red-500">*</span>
+                                </label>
+                                <Input 
+                                    id="documentName"
+                                    name="documentName"
+                                    placeholder="Hujjat nomini kiriting"
+                                    value={documentName}
+                                    onChange={(e) => setDocumentName(e.target.value)}
+                                    wrapperClassName="mb-0"
+                                />
+                            </div>
+                            
+                            {/* Document Type Selection */}
+                            <div>
+                                <label htmlFor="documentType" className="block text-sm font-medium text-light-text mb-2">
+                                    Hujjat turi <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    id="documentType"
+                                    name="documentType"
+                                    value={documentType}
+                                    onChange={(e) => setDocumentType(e.target.value)}
+                                    className="modern-select w-full"
+                                >
+                                    <option value="">Hujjat turini tanlang</option>
+                                    {DOCUMENT_TYPES.map((type) => (
+                                        <option key={type.id} value={type.id}>
+                                            {type.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            
+                            {/* Document Description */}
+                            <div>
+                                <label htmlFor="documentDescription" className="block text-sm font-medium text-light-text mb-2">
+                                    Hujjat tavsifi
+                                </label>
+                                <Textarea
+                                    id="documentDescription"
+                                    name="documentDescription"
+                                    placeholder="Hujjat tavsifini kiriting (ixtiyoriy)"
+                                    value={documentDescription}
+                                    onChange={(e) => setDocumentDescription(e.target.value)}
+                                    rows={3}
+                                    wrapperClassName="mb-0"
+                                />
+                            </div>
+                            
+                            {/* File Upload */}
+                            <div className="mb-4">
+                                <label htmlFor="articleFile" className="block text-sm font-medium text-light-text mb-2">.doc, .docx, .pdf</label>
+                                <Input 
+                                    type="file" 
+                                    id="articleFile" 
+                                    name="articleFile" 
+                                    accept=".doc,.docx,.pdf" 
+                                    onChange={(e) => setArticleFile(e.target.files?.[0])} 
+                                    wrapperClassName="mb-0" 
+                                />
+                                {articleFile && <p className="text-xs text-slate-400 mt-2">Tanlangan fayl: {articleFile.name}</p>}
+                            </div>
+                            
+                            <Button 
+                                onClick={handlePaymentRequest} 
+                                isLoading={isSubmitting} 
+                                disabled={isSubmitting || !isFormValid()}
+                                leftIcon={<ArrowUpOnSquareIcon className="h-5 w-5" />}
+                                className="w-full md:w-auto"
+                            >
+                                To'lovga o'tish
+                            </Button>
+                        </div>
+                    </Card>
                 </div>
                 
-                <Button onClick={handlePaymentRequest} isLoading={isSubmitting} disabled={isSubmitting || !service || !articleFile} leftIcon={<ArrowUpOnSquareIcon className="h-5 w-5" />}>
-                    To'lovga o'tish
-                </Button>
-                
-                {error && <Alert type="error" message={error} onClose={() => setError(null)} className="mt-4" />}
-                {successMessage && <Alert type="success" message={successMessage} className="mt-4" />}
-            </Card>
+                <div>
+                    <Card title="Ma'lumot" icon={<InformationCircleIcon className="h-6 w-6 text-sky-400" />} className="h-full">
+                        <div className="space-y-4">
+                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                <h3 className="font-semibold text-light-text mb-2">Plagiat tekshiruvi</h3>
+                                <p className="text-sm text-medium-text">
+                                    Hujjatingizni plagiat tekshiruvi orqali originalligini tekshiring. 
+                                    Natijada plagiat foizi va manbalar ko'rsatiladi.
+                                </p>
+                            </div>
+                            
+                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                <h3 className="font-semibold text-light-text mb-2">Sertifikat</h3>
+                                <p className="text-sm text-medium-text">
+                                    Muvaffaqiyatli tekshiruvdan so'ng plagiat sertifikati oling. 
+                                    Sertifikat hujjatingizning original ekanligini tasdiqlaydi.
+                                </p>
+                            </div>
+                            
+                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
+                                <h3 className="font-semibold text-light-text mb-2">Hujjat ma'lumotlari</h3>
+                                <p className="text-sm text-medium-text">
+                                    Hujjat nomi, turi va tavsifi to'liq kiritilishi talab qilinadi. 
+                                    Bu ma'lumotlar hisobot va sertifikatda ko'rsatiladi.
+                                </p>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            </div>
+
+            {error && <Alert type="error" message={error} onClose={() => setError(null)} className="mt-4" />}
+            {successMessage && <Alert type="success" message={successMessage} className="mt-4" />}
 
             {checkHistory.length > 0 && (
                 <Card title="Tekshiruvlar Tarixi" icon={<ClockIcon className="h-6 w-6 text-sky-400" />}>
                     <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-slate-700">
-                            <thead className="bg-slate-800"><tr><th className="px-4 py-3 text-left">Fayl Nomi</th><th className="px-4 py-3 text-left">Sana</th><th className="px-4 py-3 text-left">Holat</th><th className="px-4 py-3 text-left">Natija</th><th className="px-4 py-3 text-left">Amallar</th></tr></thead>
+                        <table className="min-w-full divide-y divide-slate-700 plagiarism-history-table">
+                            <thead className="bg-slate-800">
+                                <tr>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat nomi</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Fayl Nomi</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat turi</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Sana</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Holat</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Natija</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Amallar</th>
+                                </tr>
+                            </thead>
                             <tbody className="bg-secondary-dark divide-y divide-slate-700">
                                 {checkHistory.map((item) => (
-                                    <tr key={item.id}>
-                                        <td className="px-4 py-4 max-w-xs truncate">{item.fileName}</td>
-                                        <td className="px-4 py-4">{new Date(item.date).toLocaleDateString()}</td>
-                                        <td className="px-4 py-4">{item.status === 'pending_payment' ? <span className="text-amber-400">To'lov kutilmoqda</span> : <span className="text-emerald-400">Bajarildi</span>}</td>
-                                        <td className="px-4 py-4">{item.result ? `${item.result.originality.toFixed(2)}% Original` : 'N/A'}</td>
-                                        <td className="px-4 py-4 space-x-2">
+                                    <tr key={item.id} className="hover:bg-slate-800/50 transition-colors">
+                                        <td className="px-4 py-4 max-w-xs truncate text-sm">{item.documentName || 'Noma\'lum'}</td>
+                                        <td className="px-4 py-4 max-w-xs truncate text-sm">{item.fileName}</td>
+                                        <td className="px-4 py-4 text-sm">
+                                            {item.documentType ? 
+                                                DOCUMENT_TYPES.find(t => t.id === item.documentType)?.name || item.documentType : 
+                                                'Noma\'lum'}
+                                        </td>
+                                        <td className="px-4 py-4 text-sm">{new Date(item.date).toLocaleDateString()}</td>
+                                        <td className="px-4 py-4">
+                                            {item.status === 'pending_payment' ? (
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100/10 text-amber-400 border border-amber-400/30">
+                                                    To'lov kutilmoqda
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100/10 text-emerald-400 border border-emerald-400/30">
+                                                    Bajarildi
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 text-sm">
+                                            {item.result ? (
+                                                <div className="flex items-center">
+                                                    <span className={`font-medium ${item.result.originality >= 80 ? 'text-emerald-400' : item.result.originality >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+                                                        {item.result.originality.toFixed(2)}% Original
+                                                    </span>
+                                                    {item.result.originality >= 80 && (
+                                                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100/10 text-emerald-400">
+                                                            Tavsiya etiladi
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="text-slate-500">N/A</span>
+                                            )}
+                                        </td>
+                                        <td className="px-4 py-4 plagiarism-action-buttons">
                                             {item.status === 'completed' && item.result && (
-                                                <>
-                                                    <Button size="sm" variant="secondary" onClick={() => handleDownloadCertificate(item)} leftIcon={<ArrowDownTrayIcon className="h-4"/>} isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}>Sertifikat</Button>
-                                                    <Button size="sm" variant="secondary" onClick={() => handleDownloadReport(item)} leftIcon={<ArrowDownTrayIcon className="h-4"/>} isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}>Hisobot</Button>
-                                                </>
+                                                <div className="flex flex-col sm:flex-row gap-2">
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="secondary" 
+                                                        onClick={() => handleDownloadCertificate(item)} 
+                                                        leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
+                                                        isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
+                                                        className="w-full sm:w-auto"
+                                                    >
+                                                        Sertifikat
+                                                    </Button>
+                                                    <Button 
+                                                        size="sm" 
+                                                        variant="secondary" 
+                                                        onClick={() => handleDownloadReport(item)} 
+                                                        leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
+                                                        isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
+                                                        className="w-full sm:w-auto"
+                                                    >
+                                                        Hisobot
+                                                    </Button>
+                                                </div>
                                             )}
                                         </td>
                                     </tr>
