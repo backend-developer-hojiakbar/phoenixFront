@@ -42,6 +42,8 @@ import JournalDetailPage from './pages/public/JournalDetailPage';
 import JournalArticleSubmissionPage from './pages/public/JournalArticleSubmissionPage';
 import JournalEditorialApplicationPage from './pages/public/JournalEditorialApplicationPage';
 import PaymentStatusPage from './pages/PaymentStatusPage';
+import SohaManagementPage from './pages/admin/SohaManagementPage';
+import DocumentTypeManagementPage from './pages/admin/DocumentTypeManagementPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: UserRole[] }> = ({ children, roles }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -111,6 +113,8 @@ const App: React.FC = () => {
           <Route path="applications-overview" element={<ProtectedRoute roles={[UserRole.ADMIN]}><ApplicationsOverviewPage /></ProtectedRoute>} />
           <Route path="audit-log" element={<ProtectedRoute roles={[UserRole.ADMIN]}><AdminAuditLogPage /></ProtectedRoute>} />
           <Route path="system-settings" element={<ProtectedRoute roles={[UserRole.ADMIN]}><AdminSystemSettingsPage /></ProtectedRoute>} />
+          <Route path="soha-management" element={<ProtectedRoute roles={[UserRole.ADMIN]}><SohaManagementPage /></ProtectedRoute>} />
+          <Route path="document-type-management" element={<ProtectedRoute roles={[UserRole.ADMIN]}><DocumentTypeManagementPage /></ProtectedRoute>} />
           
           <Route path="*" element={<NotFoundPage />} />
         </Route>

@@ -7,10 +7,11 @@ import Input from '../../components/common/Input';
 import Textarea from '../../components/common/Textarea';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { TagIcon, ArrowLeftIcon, ArrowUpOnSquareIcon } from '@heroicons/react/24/outline';
+import { TagIcon, ArrowLeftIcon, ArrowUpOnSquareIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../../services/apiService';
 import { useServices } from '../../contexts/ServicesContext';
+import { UserRole } from '../../types';
 
 const SERVICE_SLUG = 'udc-classification';
 
@@ -24,7 +25,9 @@ const UDCClassificationPage: React.FC = () => {
     const [articleTitle, setArticleTitle] = useState('');
     const [articleAbstract, setArticleAbstract] = useState('');
     const [contactPhone, setContactPhone] = useState('');
-    const [field, setField] = useState(''); // New field for SOHA
+    const [field, setField] = useState(''); // Selected field
+    const [customField, setCustomField] = useState(''); // For adding new fields
+    const [showAddField, setShowAddField] = useState(false); // Toggle for adding new field
     const [documentFile, setDocumentFile] = useState<File | null>(null);
     
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,7 +35,7 @@ const UDCClassificationPage: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
 
     // Sample fields/soha options - in a real app, this would come from an API
-    const fieldOptions = [
+    const [fieldOptions, setFieldOptions] = useState([
         { id: 'physics', name: 'Fizika' },
         { id: 'chemistry', name: 'Kimyo' },
         { id: 'biology', name: 'Biologiya' },
@@ -43,7 +46,10 @@ const UDCClassificationPage: React.FC = () => {
         { id: 'economics', name: 'Iqtisodiyot' },
         { id: 'literature', name: 'Adabiyot' },
         { id: 'history', name: 'Tarix' }
-    ];
+    ]);
+
+    // Check if user is admin
+    const isAdmin = user?.role === UserRole.ADMIN;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -106,6 +112,23 @@ const UDCClassificationPage: React.FC = () => {
         }
     };
 
+    const handleAddField = () => {
+        if (customField.trim() !== '') {
+            const newId = customField.toLowerCase().replace(/\s+/g, '_');
+            const newField = { id: newId, name: customField.trim() };
+            
+            // Check if field already exists
+            if (!fieldOptions.some(option => option.id === newId || option.name === customField.trim())) {
+                setFieldOptions([...fieldOptions, newField]);
+                setField(newId); // Automatically select the new field
+                setCustomField('');
+                setShowAddField(false);
+            } else {
+                setError("Bu soha allaqachon mavjud.");
+            }
+        }
+    };
+ 
     if (isLoadingServices) {
         return <LoadingSpinner message="Xizmat ma'lumotlari yuklanmoqda..." />;
     }
@@ -169,22 +192,65 @@ const UDCClassificationPage: React.FC = () => {
                     </div>
                     
                     <div>
-                        <label className="block text-sm font-medium text-medium-text mb-1">
-                            Soha
-                        </label>
-                        <select
-                            value={field}
-                            onChange={(e) => setField(e.target.value)}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-md py-2 px-3 text-light-text focus:outline-none focus:ring-2 focus:ring-accent-sky"
-                            required
-                        >
-                            <option value="">Soha tanlang</option>
-                            {fieldOptions.map((option) => (
-                                <option key={option.id} value={option.id}>
-                                    {option.name}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="block text-sm font-medium text-medium-text">
+                                Soha
+                            </label>
+                            {/* Show add field button only for admin users */}
+                            {isAdmin && (
+                                <Button 
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setShowAddField(!showAddField)}
+                                    leftIcon={<PlusIcon className="h-4 w-4" />}
+                                >
+                                    Yangi soha qo'shish
+                                </Button>
+                            )}
+                        </div>
+                        
+                        {showAddField ? (
+                            <div className="space-y-2">
+                                <Input
+                                    type="text"
+                                    value={customField}
+                                    onChange={(e) => setCustomField(e.target.value)}
+                                    placeholder="Yangi soha nomini kiriting"
+                                />
+                                <div className="flex space-x-2">
+                                    <Button 
+                                        type="button"
+                                        size="sm"
+                                        onClick={handleAddField}
+                                    >
+                                        Qo'shish
+                                    </Button>
+                                    <Button 
+                                        type="button"
+                                        variant="secondary"
+                                        size="sm"
+                                        onClick={() => setShowAddField(false)}
+                                    >
+                                        Bekor qilish
+                                    </Button>
+                                </div>
+                            </div>
+                        ) : (
+                            <select
+                                value={field}
+                                onChange={(e) => setField(e.target.value)}
+                                className="w-full bg-slate-800 border border-slate-700 rounded-md py-2 px-3 text-light-text focus:outline-none focus:ring-2 focus:ring-accent-sky"
+                                required
+                            >
+                                <option value="">Soha tanlang</option>
+                                {fieldOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
                     </div>
                     
                     <div>

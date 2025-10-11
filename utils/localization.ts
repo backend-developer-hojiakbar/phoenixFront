@@ -58,6 +58,8 @@ export const translations: Translations = {
     foydalanuvchilarni_boshqarish: 'Foydalanuvchilarni Boshqarish',
     [LocalizationKeys.JURNALLARNI_BOSHQARISH_ADMIN]: 'Jurnallarni Boshqarish (Admin)',
     tizim_sozlamalari: 'Tizim Sozlamalari',
+    soha_maydonlari_boshqaruvi: 'SOHA Maydonlari Boshqaruvi',
+    hujjat_turlari_boshqaruvi: 'Hujjat Turlari Boshqaruvi',
     welcome_back: 'Xush kelibsiz',
     dashboard_subtitle: 'Bu yerda sizning faoliyatingiz va tizim holati haqida umumiy ma’lumot.',
     my_articles_summary: 'Maqolalarim Xulosasi',

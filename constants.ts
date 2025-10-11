@@ -479,6 +479,8 @@ export const NAV_LINKS = {
     { path: '/financial-report', labelKey: 'Moliyaviy hisobot' },
     { path: '/audit-log', labelKey: 'audit_jurnali_admin' },
     { path: '/system-settings', labelKey: 'tizim_sozlamalari' },
+    { path: '/soha-management', labelKey: 'soha_maydonlari_boshqaruvi' },
+    { path: '/document-type-management', labelKey: 'hujjat_turlari_boshqaruvi' },
   ]
 };
 

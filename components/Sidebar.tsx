@@ -21,9 +21,10 @@ import {
   QueueListIcon, 
   CalendarDaysIcon, 
   SparklesIcon as AiUtilsIcon, 
-  DocumentCheckIcon as PlagiarismIcon, 
+  DocumentCheckIcon as PlagiarismIcon,
   BanknotesIcon,
-  XMarkIcon
+  XMarkIcon,
+  TagIcon
 } from '@heroicons/react/24/outline';
 import { NavItem } from '../types';
 
@@ -53,6 +54,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       case 'tizim_sozlamalari': return <Cog6ToothIcon className={iconSizeClass} />; 
       case 'maqolalarni_boshqarish_admin': return <ArchiveBoxIcon className={iconSizeClass} />; 
       case 'audit_jurnali_admin': return <DocumentMagnifyingGlassIcon className={iconSizeClass} />; 
+      case 'soha_maydonlari_boshqaruvi': return <TagIcon className={iconSizeClass} />;
+      case 'hujjat_turlari_boshqaruvi': return <DocumentTextIcon className={iconSizeClass} />;
       case LocalizationKeys.NAV_CALENDAR: return <CalendarDaysIcon className={iconSizeClass} />; 
       case LocalizationKeys.NAV_AI_DOCUMENT_UTILITIES: return <AiUtilsIcon className={iconSizeClass} />; 
       case LocalizationKeys.NAV_PLAGIARISM_CHECKER: return <PlagiarismIcon className={iconSizeClass} />;

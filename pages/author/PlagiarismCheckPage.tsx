@@ -8,8 +8,9 @@ import Input from '../../components/common/Input';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Textarea from '../../components/common/Textarea';
-import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon, InformationCircleIcon, DocumentTextIcon, DocumentIcon } from '@heroicons/react/24/outline';
+import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon, InformationCircleIcon, DocumentTextIcon, DocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { LocalizationKeys } from '../../constants';
+import { UserRole } from '../../types'; // Import UserRole directly from types.ts
 import apiService from '../../services/apiService';
 import { Service } from '../../types';
 import jsPDF from 'jspdf';
@@ -20,8 +21,8 @@ import { useServices } from '../../contexts/ServicesContext';
 
 const SERVICE_SLUG = 'plagiarism-check';
 
-// Document types for selection
-const DOCUMENT_TYPES = [
+// Initial document types - in a real app, this would come from an API
+const INITIAL_DOCUMENT_TYPES = [
   { id: 'article', name: 'Ilmiy maqola' },
   { id: 'dissertation', name: 'Dissertatsiya' },
   { id: 'abstract', name: 'Avtoreferat' },
@@ -39,14 +40,22 @@ const PlagiarismCheckPage = () => {
     const [articleFile, setArticleFile] = useState(null);
     const [documentName, setDocumentName] = useState(''); // New field for document name
     const [documentType, setDocumentType] = useState(''); // New field for document type
+    const [customDocumentType, setCustomDocumentType] = useState(''); // For adding new document types
+    const [showAddType, setShowAddType] = useState(false); // Toggle for adding new document type
     const [documentDescription, setDocumentDescription] = useState(''); // New field for document description
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState(null);
     
+    // Document types state
+    const [documentTypes, setDocumentTypes] = useState(INITIAL_DOCUMENT_TYPES);
+    
     const [checkHistory, setCheckHistory] = useState([]);
     const [dataForGeneration, setDataForGeneration] = useState(null);
     const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+    // Check if user is admin
+    const isAdmin = user?.role === UserRole.ADMIN;
 
     const loadHistory = () => {
         if (user) {
@@ -82,6 +91,23 @@ const PlagiarismCheckPage = () => {
         if(user) {
             localStorage.setItem(`plagiarismHistory_${user.id}`, JSON.stringify(newHistory));
             setCheckHistory(newHistory);
+        }
+    };
+
+    const handleAddDocumentType = () => {
+        if (customDocumentType.trim() !== '') {
+            const newId = customDocumentType.toLowerCase().replace(/\s+/g, '_');
+            const newType = { id: newId, name: customDocumentType.trim() };
+            
+            // Check if type already exists
+            if (!documentTypes.some(type => type.id === newId || type.name === customDocumentType.trim())) {
+                setDocumentTypes([...documentTypes, newType]);
+                setDocumentType(newId); // Automatically select the new type
+                setCustomDocumentType('');
+                setShowAddType(false);
+            } else {
+                setError("Bu hujjat turi allaqachon mavjud.");
+            }
         }
     };
 
@@ -259,23 +285,66 @@ const PlagiarismCheckPage = () => {
                             
                             {/* Document Type Selection */}
                             <div>
-                                <label htmlFor="documentType" className="block text-sm font-medium text-light-text mb-2">
-                                    Hujjat turi <span className="text-red-500">*</span>
-                                </label>
-                                <select
-                                    id="documentType"
-                                    name="documentType"
-                                    value={documentType}
-                                    onChange={(e) => setDocumentType(e.target.value)}
-                                    className="modern-select w-full"
-                                >
-                                    <option value="">Hujjat turini tanlang</option>
-                                    {DOCUMENT_TYPES.map((type) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label htmlFor="documentType" className="block text-sm font-medium text-light-text">
+                                        Hujjat turi <span className="text-red-500">*</span>
+                                    </label>
+                                    {/* Show add type button only for admin users */}
+                                    {isAdmin && (
+                                        <Button 
+                                            type="button"
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setShowAddType(!showAddType)}
+                                            leftIcon={<PlusIcon className="h-4 w-4" />}
+                                        >
+                                            Yangi tur qo'shish
+                                        </Button>
+                                    )}
+                                </div>
+                                
+                                {showAddType ? (
+                                    <div className="space-y-2">
+                                        <Input
+                                            type="text"
+                                            value={customDocumentType}
+                                            onChange={(e) => setCustomDocumentType(e.target.value)}
+                                            placeholder="Yangi hujjat turi nomini kiriting"
+                                        />
+                                        <div className="flex space-x-2">
+                                            <Button 
+                                                type="button"
+                                                size="sm"
+                                                onClick={handleAddDocumentType}
+                                            >
+                                                Qo'shish
+                                            </Button>
+                                            <Button 
+                                                type="button"
+                                                variant="secondary"
+                                                size="sm"
+                                                onClick={() => setShowAddType(false)}
+                                            >
+                                                Bekor qilish
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <select
+                                        id="documentType"
+                                        name="documentType"
+                                        value={documentType}
+                                        onChange={(e) => setDocumentType(e.target.value)}
+                                        className="modern-select w-full"
+                                    >
+                                        <option value="">Hujjat turini tanlang</option>
+                                        {documentTypes.map((type) => (
+                                            <option key={type.id} value={type.id}>
+                                                {type.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
                             </div>
                             
                             {/* Document Description */}
@@ -377,7 +446,7 @@ const PlagiarismCheckPage = () => {
                                         <td className="px-4 py-4 max-w-xs truncate text-sm">{item.fileName}</td>
                                         <td className="px-4 py-4 text-sm">
                                             {item.documentType ? 
-                                                DOCUMENT_TYPES.find(t => t.id === item.documentType)?.name || item.documentType : 
+                                                documentTypes.find(t => t.id === item.documentType)?.name || item.documentType : 
                                                 'Noma\'lum'}
                                         </td>
                                         <td className="px-4 py-4 text-sm">{new Date(item.date).toLocaleDateString()}</td>
