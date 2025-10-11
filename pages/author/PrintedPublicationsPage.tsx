@@ -6,13 +6,14 @@ import Input from '../../components/common/Input';
 import Textarea from '../../components/common/Textarea';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { BookOpenIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, ArrowLeftIcon, IdentificationIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
 import apiService from '../../services/apiService';
 import { Service } from '../../types';
 import { useAuth } from '../../hooks/useAuth';
 
 const SERVICE_SLUG = 'printed-publications';
+const ISBN_PRICE = 650000; // 650,000 UZS for ISBN service
 
 const PrintedPublicationsPage: React.FC = () => {
     const { translate } = useLanguage();
@@ -28,6 +29,7 @@ const PrintedPublicationsPage: React.FC = () => {
     const [contactPhone, setContactPhone] = useState(user?.phone || '');
     const [deliveryAddress, setDeliveryAddress] = useState('');
     const [bookFile, setBookFile] = useState<File | null>(null);
+    const [includeISBN, setIncludeISBN] = useState(false); // New state for ISBN option
     
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -69,6 +71,7 @@ const PrintedPublicationsPage: React.FC = () => {
             coverType,
             contactPhone,
             deliveryAddress,
+            includeISBN, // Include ISBN option in form data
         };
         formData.append('form_data_str', JSON.stringify(formDetails));
 
@@ -88,6 +91,14 @@ const PrintedPublicationsPage: React.FC = () => {
             setError(err.response?.data?.detail || "Buyurtmani yuborishda xatolik.");
             setIsSubmitting(false);
         }
+    };
+    
+    // Calculate total price based on service and ISBN option
+    const calculateTotalPrice = () => {
+        if (!service) return 0;
+        const basePrice = Number(service.price);
+        const isbnPrice = includeISBN ? ISBN_PRICE : 0;
+        return basePrice + isbnPrice;
     };
     
     if (isLoadingService) {
@@ -112,8 +123,14 @@ const PrintedPublicationsPage: React.FC = () => {
                     <div className="mb-6 p-4 bg-slate-800 rounded-lg border border-slate-700">
                         <h3 className="text-lg font-semibold text-light-text">Xizmat narxi</h3>
                         <p className="text-2xl font-bold text-accent-sky mt-1">
-                            {new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS
+                            {new Intl.NumberFormat('uz-UZ').format(calculateTotalPrice())} UZS
                         </p>
+                        {includeISBN && (
+                            <div className="mt-2 text-sm text-medium-text">
+                                <p>Jami: {new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS (Asosiy xizmat)</p>
+                                <p>+ {new Intl.NumberFormat('uz-UZ').format(ISBN_PRICE)} UZS (ISBN raqami)</p>
+                            </div>
+                        )}
                     </div>
                 )}
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -142,6 +159,31 @@ const PrintedPublicationsPage: React.FC = () => {
                         <Input type="number" value={bookPages} onChange={(e) => setBookPages(e.target.value)} min="1" required />
                     </div>
                     
+                    {/* ISBN Option Section */}
+                    <div className="p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <div className="flex items-start">
+                            <div className="flex items-center h-5">
+                                <input
+                                    id="include-isbn"
+                                    name="include-isbn"
+                                    type="checkbox"
+                                    checked={includeISBN}
+                                    onChange={(e) => setIncludeISBN(e.target.checked)}
+                                    className="focus:ring-accent-sky h-4 w-4 text-accent-sky border-slate-600 rounded"
+                                />
+                            </div>
+                            <div className="ml-3 flex-1">
+                                <label htmlFor="include-isbn" className="block text-sm font-medium text-light-text">
+                                    Xalqaro standard ISBN raqami olish
+                                </label>
+                                <p className="mt-1 text-sm text-medium-text">
+                                    Kitobingiz uchun xalqaro tanilgan ISBN raqamini oling. 
+                                    Bu xizmat {new Intl.NumberFormat('uz-UZ').format(ISBN_PRICE)} UZS qo'shimcha to'lovni talab qiladi.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div>
                         <label className="block text-sm font-medium text-medium-text mb-1">Kitob muqova turi</label>
                         <div className="space-y-2">
@@ -167,7 +209,9 @@ const PrintedPublicationsPage: React.FC = () => {
                     </div>
                     
                     <div className="flex justify-end">
-                        <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting || isLoadingService || !service} className="px-6">To'lovga o'tish</Button>
+                        <Button type="submit" isLoading={isSubmitting} disabled={isSubmitting || isLoadingService || !service} className="px-6">
+                            To'lovga o'tish
+                        </Button>
                     </div>
                 </form>
             </Card>
