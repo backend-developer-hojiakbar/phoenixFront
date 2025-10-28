@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Writer Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button.secondary {
+            background-color: #008CBA;
+        }
+        .button.secondary:hover {
+            background-color: #007B9A;
+        }
+        .button.danger {
+            background-color: #f44336;
+        }
+        .button.danger:hover {
+            background-color: #d32f2f;
+        }
+        .info {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .success {
+            background-color: #dff0d8;
+            border-left: 6px solid #4CAF50;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .error {
+            background-color: #f2dede;
+            border-left: 6px solid #d9534f;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Writer Functionality Test</h1>
+        
+        <div class="info">
+            <p>This page allows you to test the writer functionality in the Phoenix Scientific Publication Center.</p>
+            <p><strong>Default Writer Credentials:</strong></p>
+            <ul>
+                <li><strong>Phone:</strong> 998900000000</li>
+                <li><strong>Password:</strong> writer123</li>
+            </ul>
+        </div>
+        
+        <h2>Test Functions</h2>
+        
+        <button class="button" onclick="addTestWriter()">Add Test Writer to localStorage</button>
+        <button class="button secondary" onclick="loginAsTestWriter()">Login as Test Writer</button>
+        <button class="button danger" onclick="logout()">Logout</button>
+        <button class="button secondary" onclick="checkLoginStatus()">Check Login Status</button>
+        
+        <h2>Navigation</h2>
+        <button class="button secondary" onclick="goToWriterDashboard()">Go to Writer Dashboard</button>
+        <button class="button secondary" onclick="goToWriterSubmitArticle()">Go to Submit Article</button>
+        <button class="button secondary" onclick="goToWriterMyArticles()">Go to My Articles</button>
+        <button class="button secondary" onclick="goToWriterProfile()">Go to Profile</button>
+        
+        <h2>Output</h2>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        // Function to add a test writer user
+        function addTestWriter() {
+            const testWriter = {
+                id: 999,
+                phone: "998900000000",
+                name: "Test",
+                surname: "Writer",
+                role: "writer",
+                language: "uz"
+            };
+            
+            localStorage.setItem('test-writer-user', JSON.stringify(testWriter));
+            outputMessage("Test writer user added to localStorage", "success");
+        }
+        
+        // Function to login as test writer
+        function loginAsTestWriter() {
+            const testWriter = JSON.parse(localStorage.getItem('test-writer-user') || '{}');
+            if (Object.keys(testWriter).length > 0) {
+                localStorage.setItem('user', JSON.stringify(testWriter));
+                localStorage.setItem('accessToken', 'test-access-token');
+                localStorage.setItem('refreshToken', 'test-refresh-token');
+                outputMessage("Logged in as test writer", "success");
+            } else {
+                outputMessage("No test writer user found. Please add test writer first.", "error");
+            }
+        }
+        
+        // Function to logout
+        function logout() {
+            localStorage.removeItem('user');
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            outputMessage("Logged out successfully", "success");
+        }
+        
+        // Function to check login status
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                outputMessage(`Currently logged in as: ${userData.name} ${userData.surname} (${userData.role})`, "info");
+            } else {
+                outputMessage("Not logged in", "info");
+            }
+        }
+        
+        // Navigation functions
+        function goToWriterDashboard() {
+            window.location.href = './#/writer/dashboard';
+        }
+        
+        function goToWriterSubmitArticle() {
+            window.location.href = './#/writer/submit-article';
+        }
+        
+        function goToWriterMyArticles() {
+            window.location.href = './#/writer/my-articles';
+        }
+        
+        function goToWriterProfile() {
+            window.location.href = './#/writer/profile';
+        }
+        
+        // Function to output messages
+        function outputMessage(message, type) {
+            const outputDiv = document.getElementById('output');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type;
+            messageDiv.innerHTML = `<strong>${type.toUpperCase()}:</strong> ${message}`;
+            outputDiv.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+        
+        // Initialize
+        window.onload = function() {
+            outputMessage("Writer test page loaded. Click buttons above to test functionality.", "info");
+            addTestWriter(); // Automatically add test writer
+        };
+    </script>
+</body>
+</html>

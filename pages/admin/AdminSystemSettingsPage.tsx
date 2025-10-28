@@ -7,6 +7,7 @@ import Alert from '../../components/common/Alert';
 import { Cog6ToothIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'; 
 import apiService from '../../services/apiService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { BookOpenIcon } from '@heroicons/react/24/outline';
 
 // Define IntegrationSetting interface inline since it's not in the types file
 interface IntegrationSetting {
@@ -95,6 +96,13 @@ const AdminSystemSettingsPage: React.FC = () => {
                     <Cog6ToothIcon className="h-6 w-6 sm:h-8 sm:w-8 text-accent-sky flex-shrink-0" />
                     <h1 className="text-2xl sm:text-3xl font-bold text-accent-sky">Tizim Sozlamalari</h1>
                 </div>
+                <Button 
+                    onClick={() => window.location.hash = '#/service-management'}
+                    className="modern-button modern-button-secondary"
+                >
+                    <Cog6ToothIcon className="h-5 w-5 mr-2" />
+                    Xizmatlarni Boshqarish
+                </Button>
             </div>
 
             {/* Action Message */}

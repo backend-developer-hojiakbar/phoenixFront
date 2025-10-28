@@ -93,7 +93,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
 
 
   return (
-    <nav className="modern-navbar bg-primary-dark border-b border-slate-700 fixed top-0 left-0 right-0 h-16 z-50" style={{ zIndex: 60 }}>
+    <nav className="bg-primary-dark border-b border-slate-700 fixed top-0 left-0 right-0 h-16 z-60" style={{ zIndex: 9999 }}>
       <div className="max-w-full mx-auto px-2 sm:px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
@@ -130,35 +130,36 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
               </button>
               {isNotificationDropdownOpen && (
                 <div
-                  className="modern-modal-overlay"
+                  className="fixed inset-0 flex items-start justify-end pt-16 pr-4 md:pt-20 md:pr-6"
+                  style={{ zIndex: 10000 }}
                   onClick={() => setIsNotificationDropdownOpen(false)}
                 >
                   <div
-                    className="modern-modal"
+                    className="bg-secondary-dark border border-slate-700 rounded-lg shadow-xl w-full max-w-xs md:max-w-sm mt-2"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <div className="modern-modal-header">
-                      <h3 className="modern-modal-title">
+                    <div className="border-b border-slate-700 px-4 py-3 flex items-center justify-between">
+                      <h3 className="text-lg font-medium text-light-text">
                         {translate(LocalizationKeys.NOTIFICATIONS_TITLE, "Notifications")}
                       </h3>
                       <button
                         onClick={() => setIsNotificationDropdownOpen(false)}
-                        className="modern-modal-close"
+                        className="text-medium-text hover:text-light-text"
                       >
                         <XMarkIcon className="h-5 w-5" />
                       </button>
                     </div>
-                    <div className="modern-modal-body">
+                    <div className="max-h-96 overflow-y-auto">
                       {notifications.length === 0 ? (
-                        <p className="text-center text-medium-text py-4">
+                        <p className="text-center text-medium-text py-4 px-4">
                           {translate(LocalizationKeys.NO_NOTIFICATIONS, "No new notifications.")}
                         </p>
                       ) : (
-                        <ul className="space-y-3">
+                        <ul className="divide-y divide-slate-700">
                           {notifications.map(notif => (
                             <li 
                               key={notif.id} 
-                              className={`p-3 rounded-lg ${notif.isRead ? 'opacity-70' : 'bg-slate-700/30'}`}
+                              className={`p-4 ${notif.isRead ? 'opacity-70' : 'bg-slate-700/30'}`}
                             >
                               <div className="flex items-start">
                                 <div className={`mr-3 mt-1 flex-shrink-0 h-2 w-2 rounded-full ${
@@ -177,7 +178,7 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                                 {!notif.isRead && (
                                   <button 
                                     onClick={() => markAsRead(notif.id)} 
-                                    className="text-xs text-accent-sky hover:underline"
+                                    className="text-xs text-accent-sky hover:underline ml-2"
                                   >
                                     {translate(LocalizationKeys.MARK_AS_READ, "Mark read")}
                                   </button>
@@ -201,10 +202,10 @@ const Navbar = ({ sidebarOpen, setSidebarOpen }) => {
                       )}
                     </div>
                     {notifications.length > 0 && unreadNotificationsCount > 0 && (
-                      <div className="modern-modal-footer">
+                      <div className="border-t border-slate-700 px-4 py-3">
                         <button 
                           onClick={markAllAsRead} 
-                          className="modern-button modern-button-secondary text-sm"
+                          className="w-full text-sm bg-slate-700 hover:bg-slate-600 text-light-text py-2 px-4 rounded-md transition duration-150"
                         >
                           {translate(LocalizationKeys.MARK_ALL_AS_READ, "Mark all as read")}
                         </button>

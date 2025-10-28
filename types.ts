@@ -1,5 +1,6 @@
 export enum UserRole {
   CLIENT = 'client',
+  WRITER = 'writer',
   JOURNAL_MANAGER = 'journal_manager',
   ACCOUNTANT = 'accountant',
   ADMIN = 'admin',

@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-dark via-slate-900 to-secondary-dark p-4 selection:bg-accent-purple/30 pb-24 md:pb-4">
-      <Card className="w-full max-w-md" gradient={false}>
+      <Card title={undefined} icon={undefined} className="w-full max-w-md" gradient={false}>
         <div className="text-center mb-8">
             <span className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent-purple to-accent-sky">
               {translate(LocalizationKeys.APP_TITLE_SHORT)}

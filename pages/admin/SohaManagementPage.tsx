@@ -9,8 +9,11 @@ import apiService from '../../services/apiService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 interface SohaField {
-  id: string;
+  id: number;
   name: string;
+  created_at?: string;
+  updated_at?: string;
+  is_active?: boolean;
 }
 
 const SohaManagementPage: React.FC = () => {
@@ -21,30 +24,14 @@ const SohaManagementPage: React.FC = () => {
     
     // Form states
     const [newFieldName, setNewFieldName] = useState('');
-    const [editingFieldId, setEditingFieldId] = useState<string | null>(null);
+    const [editingFieldId, setEditingFieldId] = useState<number | null>(null);
     const [editingFieldName, setEditingFieldName] = useState('');
-
-    // Initial sample data - in a real app, this would come from an API
-    const initialSohaFields: SohaField[] = [
-        { id: 'physics', name: 'Fizika' },
-        { id: 'chemistry', name: 'Kimyo' },
-        { id: 'biology', name: 'Biologiya' },
-        { id: 'mathematics', name: 'Matematika' },
-        { id: 'computer_science', name: 'Kompyuter fanlari' },
-        { id: 'medicine', name: 'Tibbiyot' },
-        { id: 'engineering', name: 'Muhandislik' },
-        { id: 'economics', name: 'Iqtisodiyot' },
-        { id: 'literature', name: 'Adabiyot' },
-        { id: 'history', name: 'Tarix' }
-    ];
 
     const fetchSohaFields = async () => {
         setIsLoading(true);
         try {
-            // In a real implementation, this would fetch from an API
-            // const { data } = await apiService.get<SohaField[]>('/soha-fields/');
-            // For now, we'll use the initial sample data
-            setSohaFields(initialSohaFields);
+            const { data } = await apiService.get<SohaField[]>('/soha-fields/');
+            setSohaFields(data);
         } catch (error) {
             setActionMessage({type: 'error', text: "SOHA maydonlarini yuklashda xatolik."});
         } finally {
@@ -72,13 +59,9 @@ const SohaManagementPage: React.FC = () => {
         setActionMessage(null);
         
         try {
-            const newId = newFieldName.trim().toLowerCase().replace(/\s+/g, '_');
-            const newField: SohaField = { id: newId, name: newFieldName.trim() };
+            const response = await apiService.post<SohaField>('/soha-fields/', { name: newFieldName.trim() });
             
-            // In a real implementation, this would save to an API
-            // await apiService.post('/soha-fields/', newField);
-            
-            setSohaFields([...sohaFields, newField]);
+            setSohaFields([...sohaFields, response.data]);
             setNewFieldName('');
             setActionMessage({ type: 'success', text: "Yangi SOHA maydoni muvaffaqiyatli qo'shildi!" });
         } catch(err: any) {
@@ -114,8 +97,7 @@ const SohaManagementPage: React.FC = () => {
         setActionMessage(null);
         
         try {
-            // In a real implementation, this would update via an API
-            // await apiService.patch(`/soha-fields/${editingFieldId}/`, { name: editingFieldName.trim() });
+            const response = await apiService.patch<SohaField>(`/soha-fields/${editingFieldId}/`, { name: editingFieldName.trim() });
             
             setSohaFields(sohaFields.map(field => 
                 field.id === editingFieldId 
@@ -132,7 +114,7 @@ const SohaManagementPage: React.FC = () => {
         }
     };
 
-    const handleDeleteField = async (fieldId: string) => {
+    const handleDeleteField = async (fieldId: number) => {
         // Prevent deletion of all fields
         if (sohaFields.length <= 1) {
             setActionMessage({type: 'error', text: "Kamida bitta SOHA maydoni bo'lishi kerak."});
@@ -143,8 +125,7 @@ const SohaManagementPage: React.FC = () => {
         setActionMessage(null);
         
         try {
-            // In a real implementation, this would delete via an API
-            // await apiService.delete(`/soha-fields/${fieldId}/`);
+            await apiService.delete(`/soha-fields/${fieldId}/`);
             
             setSohaFields(sohaFields.filter(field => field.id !== fieldId));
             setActionMessage({ type: 'success', text: "SOHA maydoni muvaffaqiyatli o'chirildi!" });
@@ -204,16 +185,16 @@ const SohaManagementPage: React.FC = () => {
                                             onChange={(e) => setEditingFieldName(e.target.value)}
                                             className="admin-input"
                                         />
-                                        <div className="flex space-x-3">
+                                        <div className="flex space-x-2">
                                             <Button 
-                                                onClick={handleUpdateField} 
-                                                className="admin-button-primary hover:opacity-90"
+                                                onClick={handleUpdateField}
+                                                className="admin-button-primary"
                                                 isLoading={isLoading}
                                             >
                                                 Saqlash
                                             </Button>
                                             <Button 
-                                                onClick={cancelEditing} 
+                                                onClick={cancelEditing}
                                                 variant="secondary"
                                                 className="admin-button-secondary"
                                             >
@@ -225,30 +206,30 @@ const SohaManagementPage: React.FC = () => {
                                     // View mode
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                                         <div>
-                                            <h3 className="text-lg sm:text-xl font-semibold text-light-text">
-                                                {field.name}
-                                            </h3>
-                                            <p className="text-sm text-medium-text mt-1">
-                                                ID: {field.id}
-                                            </p>
+                                            <h3 className="text-lg font-medium text-light-text">{field.name}</h3>
+                                            {field.created_at && (
+                                                <p className="text-sm text-medium-text">
+                                                    Yaratilgan: {new Date(field.created_at).toLocaleDateString('uz-UZ')}
+                                                </p>
+                                            )}
                                         </div>
                                         <div className="flex space-x-2">
                                             <Button 
-                                                onClick={() => startEditing(field)} 
+                                                onClick={() => startEditing(field)}
                                                 variant="secondary"
                                                 size="sm"
-                                                className="admin-button-secondary flex items-center"
+                                                className="admin-button-secondary"
                                                 leftIcon={<PencilIcon className="h-4 w-4" />}
                                             >
                                                 Tahrirlash
                                             </Button>
                                             <Button 
-                                                onClick={() => handleDeleteField(field.id)} 
+                                                onClick={() => handleDeleteField(field.id)}
                                                 variant="danger"
                                                 size="sm"
-                                                className="admin-button-danger flex items-center"
+                                                className="admin-button-danger"
                                                 leftIcon={<TrashIcon className="h-4 w-4" />}
-                                                disabled={sohaFields.length <= 1}
+                                                disabled={isLoading}
                                             >
                                                 O'chirish
                                             </Button>
@@ -259,15 +240,10 @@ const SohaManagementPage: React.FC = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12">
-                        <p className="text-medium-text mb-4">Hech qanday SOHA maydoni topilmadi.</p>
-                        <Button 
-                            onClick={fetchSohaFields} 
-                            variant="secondary" 
-                            className="admin-button-secondary"
-                        >
-                            Qayta urinib ko'rish
-                        </Button>
+                    <div className="text-center py-8">
+                        <TagIcon className="h-12 w-12 mx-auto text-slate-500" />
+                        <h3 className="mt-4 text-lg font-medium text-light-text">SOHA maydonlari mavjud emas</h3>
+                        <p className="mt-2 text-medium-text">Boshlash uchun yangi SOHA maydoni qo'shing.</p>
                     </div>
                 )}
             </Card>

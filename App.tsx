@@ -44,6 +44,20 @@ import JournalEditorialApplicationPage from './pages/public/JournalEditorialAppl
 import PaymentStatusPage from './pages/PaymentStatusPage';
 import SohaManagementPage from './pages/admin/SohaManagementPage';
 import DocumentTypeManagementPage from './pages/admin/DocumentTypeManagementPage';
+import AdminServiceManagementPage from './pages/admin/AdminServiceManagementPage';
+
+// Writer Pages
+import WriterDashboardPage from './pages/writer/WriterDashboardPage';
+import WriterSubmitArticlePage from './pages/writer/WriterSubmitArticlePage';
+import WriterMyArticlesPage from './pages/writer/WriterMyArticlesPage';
+import WriterProfilePage from './pages/writer/WriterProfilePage';
+import WriterArticleDetailPage from './pages/writer/WriterArticleDetailPage';
+import WriterDraftsManagementPage from './pages/writer/WriterDraftsManagementPage';
+import WriterTestPage from './pages/writer/WriterTestPage';
+import WriterUDCAssignmentPage from './pages/writer/WriterUDCAssignmentPage';
+import WriterMyUDCOrdersPage from './pages/writer/WriterMyUDCOrdersPage';
+import WriterPrintedPublicationsPage from './pages/writer/WriterPrintedPublicationsPage';
+import AdminPrintedPublicationsPage from './pages/admin/AdminPrintedPublicationsPage';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode; roles?: UserRole[] }> = ({ children, roles }) => {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -115,6 +129,22 @@ const App: React.FC = () => {
           <Route path="system-settings" element={<ProtectedRoute roles={[UserRole.ADMIN]}><AdminSystemSettingsPage /></ProtectedRoute>} />
           <Route path="soha-management" element={<ProtectedRoute roles={[UserRole.ADMIN]}><SohaManagementPage /></ProtectedRoute>} />
           <Route path="document-type-management" element={<ProtectedRoute roles={[UserRole.ADMIN]}><DocumentTypeManagementPage /></ProtectedRoute>} />
+          <Route path="service-management" element={<ProtectedRoute roles={[UserRole.ADMIN]}><AdminServiceManagementPage /></ProtectedRoute>} />
+          
+          {/* Writer Routes */}
+          <Route path="writer/dashboard" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterDashboardPage /></ProtectedRoute>} />
+          <Route path="writer/submit-article" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterSubmitArticlePage /></ProtectedRoute>} />
+          <Route path="writer/my-articles" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterMyArticlesPage /></ProtectedRoute>} />
+          <Route path="writer/my-articles/:articleId" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterArticleDetailPage /></ProtectedRoute>} />
+          <Route path="writer/profile" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterProfilePage /></ProtectedRoute>} />
+          <Route path="writer/article-drafts" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterDraftsManagementPage /></ProtectedRoute>} />
+          <Route path="writer/test" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterTestPage /></ProtectedRoute>} />
+          <Route path="writer/udc-assignment" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterUDCAssignmentPage /></ProtectedRoute>} />
+          <Route path="writer/my-udc-orders" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterMyUDCOrdersPage /></ProtectedRoute>} />
+          <Route path="writer/printed-publications" element={<ProtectedRoute roles={[UserRole.WRITER]}><WriterPrintedPublicationsPage /></ProtectedRoute>} />
+          
+          {/* Admin Routes */}
+          <Route path="admin/printed-publications" element={<ProtectedRoute roles={[UserRole.ADMIN]}><AdminPrintedPublicationsPage /></ProtectedRoute>} />
           
           <Route path="*" element={<NotFoundPage />} />
         </Route>

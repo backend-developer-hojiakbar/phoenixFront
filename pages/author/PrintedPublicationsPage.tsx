@@ -13,7 +13,11 @@ import { Service } from '../../types';
 import { useAuth } from '../../hooks/useAuth';
 
 const SERVICE_SLUG = 'printed-publications';
-const ISBN_PRICE = 650000; // 650,000 UZS for ISBN service
+const ISBN_PRICE = 600000; // 600,000 UZS for ISBN service
+const PRICE_PER_PAGE = 400; // 400 UZS per page
+const HARD_COVER_PREMIUM = 25000; // 25,000 UZS for hard cover
+const SOFT_COVER_PREMIUM = 10000; // 10,000 UZS for soft cover
+const MINIMUM_PRICE = 4000; // Minimum price of 4,000 UZS
 
 const PrintedPublicationsPage: React.FC = () => {
     const { translate } = useLanguage();
@@ -25,6 +29,7 @@ const PrintedPublicationsPage: React.FC = () => {
 
     const [bookTitle, setBookTitle] = useState('');
     const [bookPages, setBookPages] = useState('');
+    const [quantity, setQuantity] = useState('1');
     const [coverType, setCoverType] = useState<'hard' | 'soft'>('soft');
     const [contactPhone, setContactPhone] = useState(user?.phone || '');
     const [deliveryAddress, setDeliveryAddress] = useState('');
@@ -68,6 +73,7 @@ const PrintedPublicationsPage: React.FC = () => {
         const formDetails = {
             bookTitle,
             bookPages,
+            quantity,
             coverType,
             contactPhone,
             deliveryAddress,
@@ -93,12 +99,59 @@ const PrintedPublicationsPage: React.FC = () => {
         }
     };
     
-    // Calculate total price based on service and ISBN option
+    // Calculate total price based on service and user inputs
     const calculateTotalPrice = () => {
-        if (!service) return 0;
-        const basePrice = Number(service.price);
-        const isbnPrice = includeISBN ? ISBN_PRICE : 0;
-        return basePrice + isbnPrice;
+        if (!bookPages || !quantity) return 0;
+        
+        // Calculate base price based on pages
+        const pages = parseInt(bookPages) || 0;
+        let unitPrice = pages * PRICE_PER_PAGE;
+        
+        // Add cover type premium
+        if (coverType === 'hard') {
+            unitPrice += HARD_COVER_PREMIUM;
+        } else if (coverType === 'soft') {
+            unitPrice += SOFT_COVER_PREMIUM;
+        }
+        
+        // Add ISBN price if requested
+        if (includeISBN) {
+            unitPrice += ISBN_PRICE;
+        }
+        
+        // Multiply by quantity
+        const qty = parseInt(quantity) || 1;
+        let totalPrice = unitPrice * qty;
+        
+        // Ensure minimum price
+        if (totalPrice < MINIMUM_PRICE) {
+            totalPrice = MINIMUM_PRICE;
+        }
+        
+        return totalPrice;
+    };
+    
+    // Calculate unit price
+    const calculateUnitPrice = () => {
+        if (!bookPages) return 0;
+        
+        // Calculate base price based on pages
+        const pages = parseInt(bookPages) || 0;
+        let unitPrice = pages * PRICE_PER_PAGE;
+        
+        // Add cover type premium
+        if (coverType === 'hard') {
+            unitPrice += HARD_COVER_PREMIUM;
+        } else if (coverType === 'soft') {
+            unitPrice += SOFT_COVER_PREMIUM;
+        }
+        
+        // Add ISBN price if requested
+        if (includeISBN) {
+            unitPrice += ISBN_PRICE;
+        }
+        
+        return unitPrice;
     };
     
     if (isLoadingService) {
@@ -119,20 +172,33 @@ const PrintedPublicationsPage: React.FC = () => {
             </div>
             
             <Card title="Kitob Nashr Arizasi" icon={<BookOpenIcon className="h-6 w-6 text-accent-sky" />}>
-                {service && (
-                    <div className="mb-6 p-4 bg-slate-800 rounded-lg border border-slate-700">
-                        <h3 className="text-lg font-semibold text-light-text">Xizmat narxi</h3>
-                        <p className="text-2xl font-bold text-accent-sky mt-1">
-                            {new Intl.NumberFormat('uz-UZ').format(calculateTotalPrice())} UZS
-                        </p>
-                        {includeISBN && (
-                            <div className="mt-2 text-sm text-medium-text">
-                                <p>Jami: {new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS (Asosiy xizmat)</p>
-                                <p>+ {new Intl.NumberFormat('uz-UZ').format(ISBN_PRICE)} UZS (ISBN raqami)</p>
-                            </div>
-                        )}
+                <div className="mb-6 p-4 bg-slate-800 rounded-lg border border-slate-700">
+                    <h3 className="text-lg font-semibold text-light-text">Xizmat narxi</h3>
+                    <p className="text-2xl font-bold text-accent-sky mt-1">
+                        {new Intl.NumberFormat('uz-UZ').format(calculateTotalPrice())} UZS
+                    </p>
+                    <div className="mt-2 text-sm text-medium-text">
+                        <p>Jami: {new Intl.NumberFormat('uz-UZ').format(calculateTotalPrice())} UZS</p>
+                        <p className="mt-1">Tarkib:</p>
+                        <ul className="list-disc list-inside ml-2">
+                            <li>{parseInt(bookPages) || 0} bet × {new Intl.NumberFormat('uz-UZ').format(PRICE_PER_PAGE)} UZS = {new Intl.NumberFormat('uz-UZ').format((parseInt(bookPages) || 0) * PRICE_PER_PAGE)} UZS</li>
+                            {coverType === 'hard' && (
+                                <li>Qattiq muqova = {new Intl.NumberFormat('uz-UZ').format(HARD_COVER_PREMIUM)} UZS</li>
+                            )}
+                            {coverType === 'soft' && (
+                                <li>Yumshoq muqova = {new Intl.NumberFormat('uz-UZ').format(SOFT_COVER_PREMIUM)} UZS</li>
+                            )}
+                            {includeISBN && (
+                                <li>ISBN raqami = {new Intl.NumberFormat('uz-UZ').format(ISBN_PRICE)} UZS</li>
+                            )}
+                            <li className="font-medium">Birlik narxi: {new Intl.NumberFormat('uz-UZ').format(calculateUnitPrice())} UZS</li>
+                            <li className="font-medium">Miqdor: {quantity} dona</li>
+                            {calculateTotalPrice() < MINIMUM_PRICE && (
+                                <li>Minimal narx = {new Intl.NumberFormat('uz-UZ').format(MINIMUM_PRICE)} UZS</li>
+                            )}
+                        </ul>
                     </div>
-                )}
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {successMessage && <Alert type="success" message={successMessage} onClose={() => setSuccessMessage(null)} />}
                     {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
@@ -154,9 +220,16 @@ const PrintedPublicationsPage: React.FC = () => {
                         <Input type="text" value={bookTitle} onChange={(e) => setBookTitle(e.target.value)} required />
                     </div>
                     
-                    <div>
-                        <label className="block text-sm font-medium text-medium-text mb-1">Kitob betlari soni</label>
-                        <Input type="number" value={bookPages} onChange={(e) => setBookPages(e.target.value)} min="1" required />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-medium-text mb-1">Kitob betlari soni</label>
+                            <Input type="number" value={bookPages} onChange={(e) => setBookPages(e.target.value)} min="1" required />
+                        </div>
+                        
+                        <div>
+                            <label className="block text-sm font-medium text-medium-text mb-1">Nashrlash miqdori (dona)</label>
+                            <Input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} min="1" required />
+                        </div>
                     </div>
                     
                     {/* ISBN Option Section */}
@@ -189,11 +262,11 @@ const PrintedPublicationsPage: React.FC = () => {
                         <div className="space-y-2">
                             <div className="flex items-center">
                                 <input type="radio" id="hard-cover" name="cover-type" checked={coverType === 'hard'} onChange={() => setCoverType('hard')} className="h-4 w-4 text-accent-sky focus:ring-accent-sky" />
-                                <label htmlFor="hard-cover" className="ml-2 text-medium-text">Qattiq muqova</label>
+                                <label htmlFor="hard-cover" className="ml-2 text-medium-text">Qattiq muqova (+{new Intl.NumberFormat('uz-UZ').format(HARD_COVER_PREMIUM)} UZS)</label>
                             </div>
                             <div className="flex items-center">
                                 <input type="radio" id="soft-cover" name="cover-type" checked={coverType === 'soft'} onChange={() => setCoverType('soft')} className="h-4 w-4 text-accent-sky focus:ring-accent-sky" />
-                                <label htmlFor="soft-cover" className="ml-2 text-medium-text">Yumshoq muqova</label>
+                                <label htmlFor="soft-cover" className="ml-2 text-medium-text">Yumshoq muqova (+{new Intl.NumberFormat('uz-UZ').format(SOFT_COVER_PREMIUM)} UZS)</label>
                             </div>
                         </div>
                     </div>

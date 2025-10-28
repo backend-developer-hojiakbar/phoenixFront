@@ -15,6 +15,7 @@ const RegisterPage: React.FC = () => {
   const [phone, setPhone] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [role, setRole] = useState<UserRole>(UserRole.CLIENT);
   const [error, setError] = useState<string | null>(null);
   
   const { register, isLoading } = useAuth();
@@ -34,8 +35,12 @@ const RegisterPage: React.FC = () => {
     }
 
     try {
-      await register({ name, surname, phone, password, role: UserRole.CLIENT });
-      navigate('/dashboard');
+      await register({ name, surname, phone, password, role });
+      if (role === UserRole.WRITER) {
+        navigate('/writer/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
         const errorData = err.response?.data;
         let errorMessage = translate('registration_failed_default_error');
@@ -49,7 +54,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-dark via-slate-900 to-secondary-dark p-4 selection:bg-accent-purple/30 pb-24 md:pb-4">
-      <Card className="w-full max-w-lg" gradient={false}>
+      <Card title={undefined} icon={undefined} className="w-full max-w-lg" gradient={false}>
         <div className="text-center mb-8">
             <UserPlusIcon className="h-16 w-16 mx-auto text-accent-sky mb-2" />
             <h2 className="text-3xl font-bold text-light-text">{translate('create_account_title')}</h2>
@@ -94,6 +99,20 @@ const RegisterPage: React.FC = () => {
             disabled={isLoading}
             wrapperClassName="mb-0"
           />
+          <div className="mb-0">
+            <label className="block text-sm font-medium text-light-text mb-1">
+              {translate('role_label', 'Role')}
+            </label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+              disabled={isLoading}
+              className="modern-select"
+            >
+              <option value={UserRole.CLIENT}>{translate('client_role', 'Client')}</option>
+              <option value={UserRole.WRITER}>{translate('writer_role', 'Writer')}</option>
+            </select>
+          </div>
           <Input
             label={translate('password_label')}
             type="password"

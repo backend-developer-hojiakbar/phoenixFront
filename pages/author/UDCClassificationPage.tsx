@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useAuth } from '../../hooks/useAuth';
 import Card from '../../components/common/Card';
@@ -33,23 +33,50 @@ const UDCClassificationPage: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isLoadingFields, setIsLoadingFields] = useState(true);
 
-    // Sample fields/soha options - in a real app, this would come from an API
-    const [fieldOptions, setFieldOptions] = useState([
-        { id: 'physics', name: 'Fizika' },
-        { id: 'chemistry', name: 'Kimyo' },
-        { id: 'biology', name: 'Biologiya' },
-        { id: 'mathematics', name: 'Matematika' },
-        { id: 'computer_science', name: 'Kompyuter fanlari' },
-        { id: 'medicine', name: 'Tibbiyot' },
-        { id: 'engineering', name: 'Muhandislik' },
-        { id: 'economics', name: 'Iqtisodiyot' },
-        { id: 'literature', name: 'Adabiyot' },
-        { id: 'history', name: 'Tarix' }
-    ]);
+    // Fetch SOHA fields from backend
+    const [fieldOptions, setFieldOptions] = useState<{ id: number; name: string }[]>([]);
 
     // Check if user is admin
     const isAdmin = user?.role === UserRole.ADMIN;
+
+    useEffect(() => {
+        const fetchSohaFields = async () => {
+            setIsLoadingFields(true);
+            try {
+                const { data } = await apiService.get('/soha-fields/');
+                setFieldOptions(data);
+                // Set default field to first option if available
+                if (data.length > 0 && !field) {
+                    setField(data[0].id.toString());
+                }
+            } catch (err) {
+                setError("SOHA maydonlarini yuklashda xatolik yuz berdi.");
+                // Fallback to default options if API fails
+                const defaultOptions = [
+                    { id: 1, name: 'Fizika' },
+                    { id: 2, name: 'Kimyo' },
+                    { id: 3, name: 'Biologiya' },
+                    { id: 4, name: 'Matematika' },
+                    { id: 5, name: 'Kompyuter fanlari' },
+                    { id: 6, name: 'Tibbiyot' },
+                    { id: 7, name: 'Muhandislik' },
+                    { id: 8, name: 'Iqtisodiyot' },
+                    { id: 9, name: 'Adabiyot' },
+                    { id: 10, name: 'Tarix' }
+                ];
+                setFieldOptions(defaultOptions);
+                if (defaultOptions.length > 0 && !field) {
+                    setField(defaultOptions[0].id.toString());
+                }
+            } finally {
+                setIsLoadingFields(false);
+            }
+        };
+        
+        fetchSohaFields();
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,11 +113,16 @@ const UDCClassificationPage: React.FC = () => {
         if (documentFile) {
             formData.append('attached_file', documentFile);
         }
+        
+        // Find the selected field name
+        const selectedField = fieldOptions.find(option => option.id.toString() === field);
+        
         formData.append('form_data_str', JSON.stringify({ 
             articleTitle,
             articleAbstract,
             contactPhone,
-            field,
+            field: selectedField ? selectedField.name : field,
+            fieldId: field,
             fileName: documentFile?.name || ''
         }));
 
@@ -112,24 +144,27 @@ const UDCClassificationPage: React.FC = () => {
         }
     };
 
-    const handleAddField = () => {
+    const handleAddField = async () => {
         if (customField.trim() !== '') {
-            const newId = customField.toLowerCase().replace(/\s+/g, '_');
-            const newField = { id: newId, name: customField.trim() };
-            
             // Check if field already exists
-            if (!fieldOptions.some(option => option.id === newId || option.name === customField.trim())) {
-                setFieldOptions([...fieldOptions, newField]);
-                setField(newId); // Automatically select the new field
+            if (fieldOptions.some(option => option.name.toLowerCase() === customField.trim().toLowerCase())) {
+                setError("Bu soha allaqachon mavjud.");
+                return;
+            }
+            
+            try {
+                const response = await apiService.post('/soha-fields/', { name: customField.trim() });
+                setFieldOptions([...fieldOptions, response.data]);
+                setField(response.data.id.toString()); // Automatically select the new field
                 setCustomField('');
                 setShowAddField(false);
-            } else {
-                setError("Bu soha allaqachon mavjud.");
+            } catch (err: any) {
+                setError("Yangi soha qo'shishda xatolik yuz berdi.");
             }
         }
     };
  
-    if (isLoadingServices) {
+    if (isLoadingServices || isLoadingFields) {
         return <LoadingSpinner message="Xizmat ma'lumotlari yuklanmoqda..." />;
     }
 

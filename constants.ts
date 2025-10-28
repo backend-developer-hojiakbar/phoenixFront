@@ -447,7 +447,11 @@ export const LocalizationKeys = {
   PAYMENT_FOR_ARTICLE: 'payment_for_article',
   NO_TRANSACTIONS_FOUND: 'no_transactions_found',
   XIZMATLAR: 'xizmatlar',
-  BOSMA_NASHRLAR: 'bosma_nashrlar'
+  BOSMA_NASHRLAR: 'bosma_nashrlar',
+  QORALAMALARNI_BOSHQARISH: 'qoralamalarni_boshqarish',
+  CLIENT_ROLE: 'client_role',
+  WRITER_ROLE: 'writer_role',
+  XIZMATLARNI_BOSHQARISH: 'xizmatlarni_boshqarish'
 };
 
 // Bu NAV_LINKS objecti yangilangan
@@ -458,6 +462,14 @@ export const NAV_LINKS = {
     { path: '/my-articles', labelKey: 'mening_maqolalarim' },
     { path: '/services', labelKey: 'xizmatlar' },
     { path: '/profile', labelKey: 'profil_sahifasi' },
+  ],
+  [UserRole.WRITER]: [
+    { path: '/writer/dashboard', labelKey: 'boshqaruv_paneli' },
+    { path: '/writer/submit-article', labelKey: 'maqola_yuborish' },
+    { path: '/writer/my-articles', labelKey: 'mening_maqolalarim' },
+    { path: '/writer/article-drafts', labelKey: 'qoralamalarni_boshqarish' },
+    { path: '/writer/printed-publications', labelKey: 'bosma_nashrlar' },
+    { path: '/writer/profile', labelKey: 'profil_sahifasi' },
   ],
   [UserRole.JOURNAL_MANAGER]: [
     { path: '/dashboard', labelKey: 'boshqaruv_paneli' },
@@ -479,6 +491,8 @@ export const NAV_LINKS = {
     { path: '/financial-report', labelKey: 'Moliyaviy hisobot' },
     { path: '/audit-log', labelKey: 'audit_jurnali_admin' },
     { path: '/system-settings', labelKey: 'tizim_sozlamalari' },
+    { path: '/service-management', labelKey: 'xizmatlarni_boshqarish' },
+    { path: '/admin/printed-publications', labelKey: 'bosma_nashrlar' },
     { path: '/soha-management', labelKey: 'soha_maydonlari_boshqaruvi' },
     { path: '/document-type-management', labelKey: 'hujjat_turlari_boshqaruvi' },
   ]

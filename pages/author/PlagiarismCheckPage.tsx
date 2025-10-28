@@ -8,7 +8,7 @@ import Input from '../../components/common/Input';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Textarea from '../../components/common/Textarea';
-import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon, InformationCircleIcon, DocumentTextIcon, DocumentIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { DocumentCheckIcon, ArrowUpOnSquareIcon, ClockIcon, ArrowDownTrayIcon, InformationCircleIcon, DocumentTextIcon, DocumentIcon, PlusIcon, ChartBarIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { LocalizationKeys } from '../../constants';
 import { UserRole } from '../../types'; // Import UserRole directly from types.ts
 import apiService from '../../services/apiService';
@@ -250,23 +250,25 @@ const PlagiarismCheckPage = () => {
     }
 
     return (
-        <div className="space-y-6">
-            <div className="plagiarism-price-display">
+        <div className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-accent-sky flex items-center">
                     <DocumentCheckIcon className="h-6 w-6 md:h-8 md:w-8 mr-2 md:mr-3 text-accent-purple" />
                     {service?.name || translate(LocalizationKeys.PLAGIARISM_CHECKER_PAGE_TITLE)}
                 </h1>
                 {service && (
-                    <div className="plagiarism-price-card bg-gradient-to-r from-accent-purple to-accent-sky rounded-lg p-4 shadow-lg mt-4 md:mt-0">
-                        <p className="text-sm text-light-text opacity-90">Xizmat narxi</p>
-                        <p className="text-2xl font-bold text-white">{new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS</p>
+                    <div className="flex items-center space-x-2 bg-gradient-to-r from-accent-purple/10 to-accent-sky/10 rounded-lg p-3 border border-accent-purple/30">
+                        <ChartBarIcon className="h-5 w-5 text-accent-sky" />
+                        <span className="text-xl font-bold text-light-text">
+                            {new Intl.NumberFormat('uz-UZ').format(Number(service.price))} UZS
+                        </span>
                     </div>
                 )}
             </div>
 
-            <div className="plagiarism-responsive-grid gap-6">
-                <div>
-                    <Card title={translate(LocalizationKeys.UPLOAD_DOCUMENT_FOR_PLAGIARISM_CHECK_LABEL)} icon={<DocumentCheckIcon className="h-6 w-6 text-purple-400" />} className="h-full">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 space-y-6">
+                    <Card title={translate(LocalizationKeys.UPLOAD_DOCUMENT_FOR_PLAGIARISM_CHECK_LABEL)} icon={<DocumentCheckIcon className="h-6 w-6 text-purple-400" />}>
                         <div className="space-y-6">
                             {/* Document Name Field */}
                             <div>
@@ -304,7 +306,7 @@ const PlagiarismCheckPage = () => {
                                 </div>
                                 
                                 {showAddType ? (
-                                    <div className="space-y-2">
+                                    <div className="space-y-3 p-4 bg-slate-800/50 rounded-lg border border-slate-700">
                                         <Input
                                             type="text"
                                             value={customDocumentType}
@@ -364,16 +366,18 @@ const PlagiarismCheckPage = () => {
                             </div>
                             
                             {/* File Upload */}
-                            <div className="mb-4">
+                            <div>
                                 <label htmlFor="articleFile" className="block text-sm font-medium text-light-text mb-2">.doc, .docx, .pdf</label>
-                                <Input 
-                                    type="file" 
-                                    id="articleFile" 
-                                    name="articleFile" 
-                                    accept=".doc,.docx,.pdf" 
-                                    onChange={(e) => setArticleFile(e.target.files?.[0])} 
-                                    wrapperClassName="mb-0" 
-                                />
+                                <div className="modern-file-upload">
+                                    <Input 
+                                        type="file" 
+                                        id="articleFile" 
+                                        name="articleFile" 
+                                        accept=".doc,.docx,.pdf" 
+                                        onChange={(e) => setArticleFile(e.target.files?.[0])} 
+                                        wrapperClassName="mb-0" 
+                                    />
+                                </div>
                                 {articleFile && <p className="text-xs text-slate-400 mt-2">Tanlangan fayl: {articleFile.name}</p>}
                             </div>
                             
@@ -382,134 +386,207 @@ const PlagiarismCheckPage = () => {
                                 isLoading={isSubmitting} 
                                 disabled={isSubmitting || !isFormValid()}
                                 leftIcon={<ArrowUpOnSquareIcon className="h-5 w-5" />}
-                                className="w-full md:w-auto"
+                                size="lg"
+                                className="w-full"
                             >
                                 To'lovga o'tish
                             </Button>
                         </div>
                     </Card>
+                    
+                    {checkHistory.length > 0 && (
+                        <Card title="Tekshiruvlar Tarixi" icon={<ClockIcon className="h-6 w-6 text-sky-400" />}>
+                            <div className="overflow-x-auto">
+                                <table className="modern-table">
+                                    <thead>
+                                        <tr>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat nomi</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Fayl Nomi</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat turi</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Sana</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Holat</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Natija</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Amallar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {checkHistory.map((item) => (
+                                            <tr key={item.id} className="hover:bg-slate-700/50 transition-colors">
+                                                <td className="px-4 py-4 max-w-xs truncate text-sm">{item.documentName || 'Noma\'lum'}</td>
+                                                <td className="px-4 py-4 max-w-xs truncate text-sm">{item.fileName}</td>
+                                                <td className="px-4 py-4 text-sm">
+                                                    {item.documentType ? 
+                                                        documentTypes.find(t => t.id === item.documentType)?.name || item.documentType : 
+                                                        'Noma\'lum'}
+                                                </td>
+                                                <td className="px-4 py-4 text-sm">{new Date(item.date).toLocaleDateString()}</td>
+                                                <td className="px-4 py-4">
+                                                    {item.status === 'pending_payment' ? (
+                                                        <span className="modern-badge modern-badge-warning">
+                                                            To'lov kutilmoqda
+                                                        </span>
+                                                    ) : (
+                                                        <span className="modern-badge modern-badge-success">
+                                                            Bajarildi
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-4 text-sm">
+                                                    {item.result ? (
+                                                        <div className="flex items-center">
+                                                            <span className={`font-medium ${item.result.originality >= 80 ? 'text-emerald-400' : item.result.originality >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+                                                                {item.result.originality.toFixed(2)}% Original
+                                                            </span>
+                                                            {item.result.originality >= 80 && (
+                                                                <span className="ml-2 modern-badge modern-badge-success">
+                                                                    Tavsiya etiladi
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <span className="text-slate-500">N/A</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-4 py-4">
+                                                    {item.status === 'completed' && item.result && (
+                                                        <div className="flex flex-col sm:flex-row gap-2">
+                                                            <Button 
+                                                                size="sm" 
+                                                                variant="secondary" 
+                                                                onClick={() => handleDownloadCertificate(item)} 
+                                                                leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
+                                                                isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
+                                                                className="w-full sm:w-auto"
+                                                            >
+                                                                Sertifikat
+                                                            </Button>
+                                                            <Button 
+                                                                size="sm" 
+                                                                variant="secondary" 
+                                                                onClick={() => handleDownloadReport(item)} 
+                                                                leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
+                                                                isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
+                                                                className="w-full sm:w-auto"
+                                                            >
+                                                                Hisobot
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Card>
+                    )}
                 </div>
                 
-                <div>
-                    <Card title="Ma'lumot" icon={<InformationCircleIcon className="h-6 w-6 text-sky-400" />} className="h-full">
-                        <div className="space-y-4">
-                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-                                <h3 className="font-semibold text-light-text mb-2">Plagiat tekshiruvi</h3>
-                                <p className="text-sm text-medium-text">
-                                    Hujjatingizni plagiat tekshiruvi orqali originalligini tekshiring. 
-                                    Natijada plagiat foizi va manbalar ko'rsatiladi.
-                                </p>
+                <div className="space-y-6">
+                    <Card title="Ma'lumot" icon={<InformationCircleIcon className="h-6 w-6 text-sky-400" />}>
+                        <div className="space-y-5">
+                            <div className="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <DocumentCheckIcon className="h-5 w-5 text-purple-400" />
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="font-semibold text-light-text">Plagiat tekshiruvi</h3>
+                                    <p className="text-sm text-medium-text mt-1">
+                                        Hujjatingizni plagiat tekshiruvi orqali originalligini tekshiring. 
+                                        Natijada plagiat foizi va manbalar ko'rsatiladi.
+                                    </p>
+                                </div>
                             </div>
                             
-                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-                                <h3 className="font-semibold text-light-text mb-2">Sertifikat</h3>
-                                <p className="text-sm text-medium-text">
-                                    Muvaffaqiyatli tekshiruvdan so'ng plagiat sertifikati oling. 
-                                    Sertifikat hujjatingizning original ekanligini tasdiqlaydi.
-                                </p>
+                            <div className="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <ShieldCheckIcon className="h-5 w-5 text-emerald-400" />
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="font-semibold text-light-text">Sertifikat</h3>
+                                    <p className="text-sm text-medium-text mt-1">
+                                        Muvaffaqiyatli tekshiruvdan so'ng plagiat sertifikati oling. 
+                                        Sertifikat hujjatingizning original ekanligini tasdiqlaydi.
+                                    </p>
+                                </div>
                             </div>
                             
-                            <div className="bg-slate-800/50 rounded-lg p-4 border border-slate-700">
-                                <h3 className="font-semibold text-light-text mb-2">Hujjat ma'lumotlari</h3>
-                                <p className="text-sm text-medium-text">
-                                    Hujjat nomi, turi va tavsifi to'liq kiritilishi talab qilinadi. 
-                                    Bu ma'lumotlar hisobot va sertifikatda ko'rsatiladi.
-                                </p>
+                            <div className="flex items-start p-4 bg-slate-800/50 rounded-lg border border-slate-700">
+                                <div className="flex-shrink-0 mt-0.5">
+                                    <DocumentTextIcon className="h-5 w-5 text-amber-400" />
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="font-semibold text-light-text">Hujjat ma'lumotlari</h3>
+                                    <p className="text-sm text-medium-text mt-1">
+                                        Hujjat nomi, turi va tavsifi to'liq kiritilishi talab qilinadi. 
+                                        Bu ma'lumotlar hisobot va sertifikatda ko'rsatiladi.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </Card>
+                    
+                    <div className="bg-gradient-to-r from-purple-500/10 to-sky-500/10 rounded-xl p-5 border border-purple-500/30">
+                        <h3 className="font-semibold text-light-text mb-3 flex items-center">
+                            <ChartBarIcon className="h-5 w-5 mr-2 text-purple-400" />
+                            Tekshiruv statistikasi
+                        </h3>
+                        <div className="space-y-3">
+                            <div>
+                                <div className="flex justify-between text-sm mb-1">
+                                    <span className="text-medium-text">Jami tekshiruvlar</span>
+                                    <span className="text-light-text font-medium">{checkHistory.length}</span>
+                                </div>
+                                <div className="w-full bg-slate-700 rounded-full h-2">
+                                    <div 
+                                        className="bg-gradient-to-r from-purple-500 to-sky-500 h-2 rounded-full" 
+                                        style={{ width: '100%' }}
+                                    ></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex justify-between text-sm mb-1">
+                                    <span className="text-medium-text">Muvaffaqiyatli</span>
+                                    <span className="text-light-text font-medium">
+                                        {checkHistory.filter(item => item.status === 'completed').length}
+                                    </span>
+                                </div>
+                                <div className="w-full bg-slate-700 rounded-full h-2">
+                                    <div 
+                                        className="bg-emerald-500 h-2 rounded-full" 
+                                        style={{ 
+                                            width: checkHistory.length ? 
+                                                `${(checkHistory.filter(item => item.status === 'completed').length / checkHistory.length) * 100}%` : 
+                                                '0%' 
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div className="flex justify-between text-sm mb-1">
+                                    <span className="text-medium-text">To'lov kutilmoqda</span>
+                                    <span className="text-light-text font-medium">
+                                        {checkHistory.filter(item => item.status === 'pending_payment').length}
+                                    </span>
+                                </div>
+                                <div className="w-full bg-slate-700 rounded-full h-2">
+                                    <div 
+                                        className="bg-amber-500 h-2 rounded-full" 
+                                        style={{ 
+                                            width: checkHistory.length ? 
+                                                `${(checkHistory.filter(item => item.status === 'pending_payment').length / checkHistory.length) * 100}%` : 
+                                                '0%' 
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {error && <Alert type="error" message={error} onClose={() => setError(null)} className="mt-4" />}
             {successMessage && <Alert type="success" message={successMessage} className="mt-4" />}
-
-            {checkHistory.length > 0 && (
-                <Card title="Tekshiruvlar Tarixi" icon={<ClockIcon className="h-6 w-6 text-sky-400" />}>
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-slate-700 plagiarism-history-table">
-                            <thead className="bg-slate-800">
-                                <tr>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat nomi</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Fayl Nomi</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Hujjat turi</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Sana</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Holat</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Natija</th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-medium-text uppercase tracking-wider">Amallar</th>
-                                </tr>
-                            </thead>
-                            <tbody className="bg-secondary-dark divide-y divide-slate-700">
-                                {checkHistory.map((item) => (
-                                    <tr key={item.id} className="hover:bg-slate-800/50 transition-colors">
-                                        <td className="px-4 py-4 max-w-xs truncate text-sm">{item.documentName || 'Noma\'lum'}</td>
-                                        <td className="px-4 py-4 max-w-xs truncate text-sm">{item.fileName}</td>
-                                        <td className="px-4 py-4 text-sm">
-                                            {item.documentType ? 
-                                                documentTypes.find(t => t.id === item.documentType)?.name || item.documentType : 
-                                                'Noma\'lum'}
-                                        </td>
-                                        <td className="px-4 py-4 text-sm">{new Date(item.date).toLocaleDateString()}</td>
-                                        <td className="px-4 py-4">
-                                            {item.status === 'pending_payment' ? (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100/10 text-amber-400 border border-amber-400/30">
-                                                    To'lov kutilmoqda
-                                                </span>
-                                            ) : (
-                                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100/10 text-emerald-400 border border-emerald-400/30">
-                                                    Bajarildi
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-4 text-sm">
-                                            {item.result ? (
-                                                <div className="flex items-center">
-                                                    <span className={`font-medium ${item.result.originality >= 80 ? 'text-emerald-400' : item.result.originality >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
-                                                        {item.result.originality.toFixed(2)}% Original
-                                                    </span>
-                                                    {item.result.originality >= 80 && (
-                                                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100/10 text-emerald-400">
-                                                            Tavsiya etiladi
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <span className="text-slate-500">N/A</span>
-                                            )}
-                                        </td>
-                                        <td className="px-4 py-4 plagiarism-action-buttons">
-                                            {item.status === 'completed' && item.result && (
-                                                <div className="flex flex-col sm:flex-row gap-2">
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="secondary" 
-                                                        onClick={() => handleDownloadCertificate(item)} 
-                                                        leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
-                                                        isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
-                                                        className="w-full sm:w-auto"
-                                                    >
-                                                        Sertifikat
-                                                    </Button>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="secondary" 
-                                                        onClick={() => handleDownloadReport(item)} 
-                                                        leftIcon={<ArrowDownTrayIcon className="h-4 w-4" />} 
-                                                        isLoading={isGeneratingPdf && dataForGeneration?.data.id === item.id}
-                                                        className="w-full sm:w-auto"
-                                                    >
-                                                        Hisobot
-                                                    </Button>
-                                                </div>
-                                            )}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </Card>
-            )}
 
             {isGeneratingPdf && <LoadingSpinner message="PDF yaratilmoqda..." />}
             {dataForGeneration && dataForGeneration.type === 'certificate' && (

@@ -6,7 +6,7 @@ import Input from '../../components/common/Input';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Modal from '../../components/common/Modal';
 import Alert from '../../components/common/Alert';
-import { ArchiveBoxIcon, FunnelIcon, MagnifyingGlassIcon, ArrowsRightLeftIcon } from '@heroicons/react/24/outline';
+import { ArchiveBoxIcon, FunnelIcon, MagnifyingGlassIcon, ArrowsRightLeftIcon, DocumentTextIcon, BookOpenIcon } from '@heroicons/react/24/outline';
 import { Article, ArticleStatus, Journal, User, UserRole, PaymentStatus } from '../../types';
 import { LocalizationKeys } from '../../constants';
 import apiService, { createFormData } from '../../services/apiService';
@@ -20,17 +20,17 @@ interface SelectOption {
 const StatusBadgeAdmin: React.FC<{ status: ArticleStatus }> = ({ status }) => {
   const { translate } = useLanguage();
   const statusInfo = {
-    [ArticleStatus.PENDING]: { textKey: 'status_pending', color: 'bg-yellow-500/20 text-yellow-300 border-yellow-500' },
-    [ArticleStatus.REVIEWING]: { textKey: 'status_reviewing', color: 'bg-sky-500/20 text-sky-300 border-sky-500' },
-    [ArticleStatus.NEEDS_REVISION]: { textKey: 'status_needs_revision', color: 'bg-amber-500/20 text-amber-300 border-amber-500' },
-    [ArticleStatus.ACCEPTED]: { textKey: 'status_accepted', color: 'bg-emerald-500/20 text-emerald-300 border-emerald-500' },
-    [ArticleStatus.REJECTED]: { textKey: 'status_rejected', color: 'bg-red-500/20 text-red-300 border-red-500' },
-    [ArticleStatus.PUBLISHED]: { textKey: LocalizationKeys.STATUS_PUBLISHED, color: 'bg-purple-500/20 text-purple-300 border-purple-500' },
+    [ArticleStatus.PENDING]: { textKey: 'status_pending', color: 'modern-badge modern-badge-warning' },
+    [ArticleStatus.REVIEWING]: { textKey: 'status_reviewing', color: 'modern-badge modern-badge-secondary' },
+    [ArticleStatus.NEEDS_REVISION]: { textKey: 'status_needs_revision', color: 'modern-badge modern-badge-warning' },
+    [ArticleStatus.ACCEPTED]: { textKey: 'status_accepted', color: 'modern-badge modern-badge-success' },
+    [ArticleStatus.REJECTED]: { textKey: 'status_rejected', color: 'modern-badge modern-badge-danger' },
+    [ArticleStatus.PUBLISHED]: { textKey: LocalizationKeys.STATUS_PUBLISHED, color: 'modern-badge modern-badge-primary' },
   };
   const currentStatus = statusInfo[status] || statusInfo[ArticleStatus.PENDING];
   
   return (
-    <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${currentStatus.color} admin-status-badge`}>
+    <span className={currentStatus.color}>
       {translate(currentStatus.textKey, status)}
     </span>
   );
@@ -116,7 +116,7 @@ const AdminArticleOverviewPage: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6 sm:space-y-8">
+        <div className="space-y-8">
             {/* Header Section */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex items-center space-x-3">
@@ -126,103 +126,179 @@ const AdminArticleOverviewPage: React.FC = () => {
             </div>
 
             {/* Action Message */}
-            {actionMessage && <Alert type={actionMessage.type} message={actionMessage.text} onClose={() => setActionMessage(null)} className="my-4 admin-alert admin-alert-success" />}
+            {actionMessage && <Alert type={actionMessage.type} message={actionMessage.text} onClose={() => setActionMessage(null)} className="my-4" />}
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="modern-dashboard-card">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-medium-text">Jami maqolalar</p>
+                            <p className="text-2xl font-bold text-light-text mt-1">{articles.length}</p>
+                        </div>
+                        <div className="p-3 bg-sky-500/10 rounded-lg">
+                            <DocumentTextIcon className="h-6 w-6 text-sky-500" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="modern-dashboard-card">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-medium-text">Ko'rib chiqilmoqda</p>
+                            <p className="text-2xl font-bold text-light-text mt-1">{articles.filter(a => a.status === ArticleStatus.REVIEWING).length}</p>
+                        </div>
+                        <div className="p-3 bg-purple-500/10 rounded-lg">
+                            <ArchiveBoxIcon className="h-6 w-6 text-purple-500" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="modern-dashboard-card">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-medium-text">Qabul qilingan</p>
+                            <p className="text-2xl font-bold text-light-text mt-1">{articles.filter(a => a.status === ArticleStatus.ACCEPTED).length}</p>
+                        </div>
+                        <div className="p-3 bg-emerald-500/10 rounded-lg">
+                            <DocumentTextIcon className="h-6 w-6 text-emerald-500" />
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="modern-dashboard-card">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-medium-text">Nashr etilgan</p>
+                            <p className="text-2xl font-bold text-light-text mt-1">{articles.filter(a => a.status === ArticleStatus.PUBLISHED).length}</p>
+                        </div>
+                        <div className="p-3 bg-amber-500/10 rounded-lg">
+                            <DocumentTextIcon className="h-6 w-6 text-amber-500" />
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Printed Publications Card */}
+                <div className="modern-dashboard-card">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-medium-text">Bosma Nashrlar</p>
+                            <Button 
+                                onClick={() => window.location.hash = '#/admin/printed-publications'}
+                                className="mt-2 modern-button modern-button-secondary text-sm"
+                            >
+                                Boshqarish
+                            </Button>
+                        </div>
+                        <div className="p-3 bg-indigo-500/10 rounded-lg">
+                            <BookOpenIcon className="h-6 w-6 text-indigo-500" />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Filter Card */}
-            <Card className="admin-card-gradient" title={undefined} icon={undefined}>
-                <div className="admin-filter-grid mb-4">
-                    <Input 
-                        placeholder={translate('search_placeholder')}
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        leftIcon={<MagnifyingGlassIcon className="h-5 w-5 text-gray-400"/>}
-                        wrapperClassName="mb-0 admin-form-group"
-                        className="admin-input"
-                    />
-                    <div className="admin-form-group">
-                        <label htmlFor="journalFilter" className="admin-form-label">
+            <Card title={translate('filter_options_title')} icon={<FunnelIcon className="h-6 w-6 text-accent-purple"/>}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                    <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input 
+                            type="text"
+                            placeholder={translate('search_placeholder')}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="modern-input pl-10"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="journalFilter" className="block text-sm font-medium text-light-text mb-1">
                             {translate(LocalizationKeys.FILTER_BY_JOURNAL_LABEL)}
                         </label>
                         <select 
                             id="journalFilter"
                             value={filterJournal} 
                             onChange={e => setFilterJournal(e.target.value)}
-                            className="w-full admin-select"
+                            className="modern-select"
                         >
                             {journalOptions.map(opt => <option key={opt.value} value={opt.value as string}>{opt.label}</option>)}
                         </select>
                     </div>
-                    <div className="admin-form-group">
-                        <label htmlFor="statusFilter" className="admin-form-label">
+                    <div>
+                        <label htmlFor="statusFilter" className="block text-sm font-medium text-light-text mb-1">
                             {translate(LocalizationKeys.FILTER_BY_STATUS_LABEL)}
                         </label>
                         <select 
                             id="statusFilter"
                             value={filterStatus} 
                             onChange={e => setFilterStatus(e.target.value as ArticleStatus | 'ALL')}
-                            className="w-full admin-select"
+                            className="modern-select"
                         >
                             {statusOptions.map(opt => <option key={opt.value} value={opt.value as string}>{opt.label}</option>)}
                         </select>
                     </div>
-                    <div className="admin-form-group">
-                        <label htmlFor="editorFilter" className="admin-form-label">
+                    <div>
+                        <label htmlFor="editorFilter" className="block text-sm font-medium text-light-text mb-1">
                             {translate(LocalizationKeys.FILTER_BY_AUTHOR_LABEL)}
                         </label>
                         <select 
                             id="editorFilter"
                             value={filterEditor} 
                             onChange={e => setFilterEditor(e.target.value)}
-                            className="w-full admin-select"
+                            className="modern-select"
                         >
                             {editorOptions.map(opt => <option key={opt.value} value={opt.value as string}>{opt.label}</option>)}
                         </select>
                     </div>
                 </div>
-                
-                {isLoading ? <LoadingSpinner message={translate('loading_articles_overview')} />
-                : filteredArticles.length === 0 && !actionMessage?.text ? (
+            </Card>
+            
+            {isLoading ? <LoadingSpinner message={translate('loading_articles_overview')} />
+            : filteredArticles.length === 0 && !actionMessage?.text ? (
+                <Card title={undefined} icon={undefined}>
                     <div className="text-center py-12">
-                        <p className="text-medium-text mb-4">{translate(LocalizationKeys.NO_ARTICLES_IN_SYSTEM_MESSAGE)}</p>
+                        <ArchiveBoxIcon className="h-12 w-12 mx-auto text-slate-500 mb-4" />
+                        <h3 className="text-lg font-medium text-light-text mb-2">{translate(LocalizationKeys.NO_ARTICLES_IN_SYSTEM_MESSAGE)}</h3>
+                        <p className="text-medium-text mb-4">Hozirda hech qanday maqola topilmadi.</p>
                         <Button 
                           onClick={fetchData} 
-                          variant="secondary" 
-                          className="admin-button-secondary"
+                          variant="secondary"
                         >
                           Qayta yuklash
                         </Button>
                     </div>
-                ) : (
+                </Card>
+            ) : (
+                <Card title={`Maqolalar (${filteredArticles.length})`} icon={<DocumentTextIcon className="h-6 w-6 text-accent-sky"/>}>
                     <div className="overflow-x-auto rounded-lg border border-slate-700">
-                        <table className="min-w-full divide-y divide-slate-700 admin-table">
-                             <thead className="admin-table-header">
+                        <table className="modern-table">
+                            <thead>
                                 <tr>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Sarlavha</th>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Muallif</th>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Jurnal</th>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Redaktor</th>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Holat</th>
-                                    <th className="px-3 py-3 sm:px-4 sm:py-4 text-left text-xs sm:text-sm font-medium text-slate-300 uppercase tracking-wider">Amal</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Sarlavha</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Muallif</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Jurnal</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Redaktor</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Holat</th>
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Amal</th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-secondary-dark divide-y divide-slate-700">
+                            <tbody>
                                 {filteredArticles.map(article => (
                                     <tr key={article.id} className="hover:bg-slate-700/50 transition-colors">
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 text-sm text-light-text font-medium max-w-xs truncate">{article.title}</td>
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap text-sm text-medium-text">{article.author.name} {article.author.surname}</td>
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap text-sm text-medium-text max-w-[120px] truncate">{article.journalName}</td>
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap text-sm text-medium-text max-w-[120px] truncate">{article.assignedEditorName || translate('unassigned')}</td>
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap"><StatusBadgeAdmin status={article.status} /></td>
-                                        <td className="px-3 py-3 sm:px-4 sm:py-4 whitespace-nowrap">
+                                        <td className="px-4 py-4 text-sm font-medium text-light-text max-w-xs truncate">{article.title}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-medium-text">{article.author.name} {article.author.surname}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-medium-text max-w-[120px] truncate">{article.journalName}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap text-sm text-medium-text max-w-[120px] truncate">{article.assignedEditorName || translate('unassigned')}</td>
+                                        <td className="px-4 py-4 whitespace-nowrap"><StatusBadgeAdmin status={article.status} /></td>
+                                        <td className="px-4 py-4 whitespace-nowrap">
                                             <Button 
                                                 size="sm" 
                                                 variant="ghost" 
                                                 onClick={() => handleOpenReassignModal(article)} 
                                                 leftIcon={<ArrowsRightLeftIcon className="h-4 w-4"/>}
-                                                className="admin-action-button hover:bg-slate-600"
                                             >
                                                 <span className="hidden xs:inline">{translate('reassign_button')}</span>
-                                                <span className="xs:hidden"><ArrowsRightLeftIcon className="h-4 w-4" /></span>
                                             </Button>
                                         </td>
                                     </tr>
@@ -230,8 +306,8 @@ const AdminArticleOverviewPage: React.FC = () => {
                             </tbody>
                         </table>
                     </div>
-                )}
-            </Card>
+                </Card>
+            )}
 
             {/* Reassign Editor Modal */}
             {currentArticleForReassign && (
@@ -240,40 +316,39 @@ const AdminArticleOverviewPage: React.FC = () => {
                     onClose={() => setIsReassignModalOpen(false)} 
                     title={`${translate(LocalizationKeys.REASSIGN_EDITOR_BUTTON)}: ${currentArticleForReassign.title}`}
                 >
-                    <div className="admin-form-group">
-                        <label htmlFor="newEditor" className="admin-form-label">{translate(LocalizationKeys.SELECT_NEW_EDITOR_LABEL)}</label>
-                        <select
-                            id="newEditor"
-                            value={newEditorId}
-                            onChange={(e) => setNewEditorId(e.target.value)}
-                            className="w-full admin-select"
-                        >
-                            <option value="">{translate('select_editor_option')}</option>
-                            {editors.map(editor => (
-                                <option key={editor.id} value={editor.id}>{editor.name} {editor.surname}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 admin-modal-footer">
-                        <Button 
-                            variant="secondary" 
-                            onClick={() => setIsReassignModalOpen(false)} 
-                            className="w-full sm:w-auto admin-button-secondary"
-                        >
-                            {translate('cancel_button')}
-                        </Button>
-                        <Button 
-                            onClick={handleReassignEditor} 
-                            disabled={!newEditorId || isLoading} 
-                            className="w-full sm:w-auto admin-button-primary"
-                            isLoading={isLoading}
-                        >
-                            {translate('reassign_button')}
-                        </Button>
+                    <div className="space-y-4">
+                        <div>
+                            <label htmlFor="newEditor" className="block text-sm font-medium text-light-text mb-1">{translate(LocalizationKeys.SELECT_NEW_EDITOR_LABEL)}</label>
+                            <select
+                                id="newEditor"
+                                value={newEditorId}
+                                onChange={(e) => setNewEditorId(e.target.value)}
+                                className="modern-select"
+                            >
+                                <option value="">{translate('select_editor_option')}</option>
+                                {editors.map(editor => (
+                                    <option key={editor.id} value={editor.id}>{editor.name} {editor.surname}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4">
+                            <Button 
+                                variant="secondary" 
+                                onClick={() => setIsReassignModalOpen(false)}
+                            >
+                                {translate('cancel_button')}
+                            </Button>
+                            <Button 
+                                onClick={handleReassignEditor} 
+                                disabled={!newEditorId || isLoading} 
+                                isLoading={isLoading}
+                            >
+                                {translate('reassign_button')}
+                            </Button>
+                        </div>
                     </div>
                 </Modal>
             )}
-
         </div>
     );
 };
